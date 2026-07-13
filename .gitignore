@@ -1,0 +1,11 @@
+backend/.env
+backend/moodmap.db
+backend/__pycache__/
+backend/.venv/
+backend/.pytest_cache/
+frontend/node_modules/
+frontend/dist/
+*.pyc
+.DS_Store
+*.egg-info/
+.env
