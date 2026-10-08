@@ -1,6 +1,6 @@
 # MoodMap
 
-A location-aware emotional wellness platform: describe how you feel, and MoodMap finds nearby places suited to help you reset, shift, or match your mood..
+A location-aware emotional wellness platform: describe how you feel, and MoodMap finds nearby places suited to help you reset, shift, or match your mood.
 
 ## Tech Stack
 
