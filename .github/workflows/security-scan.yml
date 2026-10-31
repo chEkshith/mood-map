@@ -1,0 +1,37 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 9 * * 1"
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install safety
+        run: pip install safety
+
+      - name: Check backend dependencies
+        run: safety check -r backend/requirements.txt
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Audit frontend dependencies
+        working-directory: frontend
+        run: npm audit --audit-level=high
