@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from bson import ObjectId
 from fastapi import APIRouter, Depends, File, HTTPException, Request, Response, UploadFile, status
@@ -56,7 +56,10 @@ async def _issue_session(response: Response, user_id: str, db: AsyncIOMotorDatab
             "user_id": ObjectId(user_id),
             "token": refresh_token,
             "revoked": False,
-            "expires_at": datetime.now(timezone.utc).replace(microsecond=0),
+            "expires_at": (
+                datetime.now(timezone.utc)
+                + timedelta(days=settings.jwt_refresh_token_expire_days)
+            ).replace(microsecond=0),
         }
     )
 
@@ -107,7 +110,17 @@ async def login(
 
 
 @router.post("/logout")
-async def logout(response: Response):
+async def logout(
+    request: Request,
+    response: Response,
+    db: AsyncIOMotorDatabase = Depends(get_db),
+):
+    refresh_token = request.cookies.get(REFRESH_COOKIE_NAME)
+    if refresh_token:
+        try:
+            await db.refresh_tokens.delete_one({"token": refresh_token})
+        except Exception as exc:  # noqa: BLE001
+            logger.warning(f"Failed to delete refresh token from DB on logout: {exc}")
     clear_auth_cookies(response)
     return {"message": "logged out"}
 

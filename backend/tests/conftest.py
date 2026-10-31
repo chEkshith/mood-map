@@ -17,11 +17,32 @@ from app.main import app
 from app.schemas.mood import MoodRequest
 
 
+from unittest.mock import AsyncMock, MagicMock
+from app.db import get_db
+
+
 @pytest_asyncio.fixture
 async def test_client():
+    mock_database = MagicMock()
+    mock_database.users = MagicMock()
+    mock_database.mood_entries = MagicMock()
+    mock_database.refresh_tokens = MagicMock()
+
+    mock_database.users.find_one = AsyncMock(return_value=None)
+    mock_database.users.update_one = AsyncMock(return_value=None)
+    mock_database.users.insert_one = AsyncMock(return_value=MagicMock(inserted_id="507f1f77bcf86cd799439011"))
+    mock_database.mood_entries.find_one = AsyncMock(return_value=None)
+    mock_database.mood_entries.insert_one = AsyncMock(return_value=MagicMock(inserted_id="507f1f77bcf86cd799439011"))
+    mock_database.mood_entries.update_one = AsyncMock(return_value=None)
+
+    async def override_get_db():
+        return mock_database
+
+    app.dependency_overrides[get_db] = override_get_db
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://testserver") as client:
         yield client
+    app.dependency_overrides.clear()
 
 
 @pytest.fixture

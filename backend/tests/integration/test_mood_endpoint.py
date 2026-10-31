@@ -38,30 +38,33 @@ async def test_submit_mood_returns_valid_shape_with_mocks(test_client, sample_mo
         )
     ]
 
-    with patch(
-        "app.middleware.auth_middleware.get_current_user", new=AsyncMock(return_value=fake_user)
-    ), patch(
-        "app.routers.mood.classifier.classify",
-        new=AsyncMock(return_value=(MoodEnum.stressed, 0.9)),
-    ), patch(
-        "app.routers.mood.places_svc.search_nearby",
-        new=AsyncMock(return_value=fake_places),
-    ), patch(
-        "app.routers.mood.history_svc.log", new=AsyncMock(return_value=None)
-    ), patch(
-        "app.routers.mood._update_streak", new=AsyncMock(return_value=None)
-    ):
-        response = await test_client.post(
-            "/api/v1/mood/places",
-            json=sample_mood_request.model_dump(),
-        )
+    from app.main import app
+    from app.middleware.auth_middleware import get_current_user
 
-    # Without overriding the FastAPI dependency this will still 401;
-    # this test documents the expected shape once auth is satisfied.
-    assert response.status_code in (200, 401)
-    if response.status_code == 200:
+    app.dependency_overrides[get_current_user] = lambda: fake_user
+    try:
+        with patch(
+            "app.routers.mood.classifier.classify",
+            new=AsyncMock(return_value=(MoodEnum.stressed, 0.9)),
+        ), patch(
+            "app.routers.mood.places_svc.search_nearby",
+            new=AsyncMock(return_value=fake_places),
+        ), patch(
+            "app.routers.mood.history_svc.log", new=AsyncMock(return_value=None)
+        ), patch(
+            "app.routers.mood._update_streak", new=AsyncMock(return_value=None)
+        ):
+            response = await test_client.post(
+                "/api/v1/mood/places",
+                json=sample_mood_request.model_dump(),
+            )
+
+        assert response.status_code == 200
         data = response.json()
         assert "mood" in data
         assert "places" in data
         assert "total_results" in data
         assert "request_id" in data
+    finally:
+        app.dependency_overrides.pop(get_current_user, None)
+

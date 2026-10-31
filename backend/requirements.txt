@@ -1,12 +1,13 @@
 fastapi
 uvicorn[standard]
-pydantic
+pydantic[email]
 pydantic-settings
 httpx
 motor
 pymongo
 python-jose[cryptography]
 passlib[bcrypt]
+bcrypt==4.0.1
 python-multipart
 groq
 cloudinary
