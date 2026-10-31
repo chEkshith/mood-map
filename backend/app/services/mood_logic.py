@@ -8,17 +8,17 @@ MOOD_TO_PLACE_STRATEGY: dict[MoodEnum, dict] = {
     },
     MoodEnum.anxious: {
         "strategy": "shift",
-        "place_types": ["cafe", "bookstore", "aquarium", "botanical_garden"],
+        "place_types": ["book_store", "library", "park", "botanical_garden"],
         "why": "gentle warmth without overwhelming stimulation",
     },
     MoodEnum.bored: {
         "strategy": "match",
-        "place_types": ["museum", "movie_theater", "arcade", "art_gallery"],
+        "place_types": ["museum", "movie_theater", "video_arcade", "art_gallery"],
         "why": "novelty and engagement to break the flatness",
     },
     MoodEnum.exhausted: {
         "strategy": "reset",
-        "place_types": ["park", "spa", "cafe", "library"],
+        "place_types": ["park", "spa", "library", "book_store"],
         "why": "restorative, low-energy environments",
     },
     MoodEnum.happy: {
@@ -28,7 +28,7 @@ MOOD_TO_PLACE_STRATEGY: dict[MoodEnum, dict] = {
     },
     MoodEnum.melancholic: {
         "strategy": "shift",
-        "place_types": ["cafe", "bookstore", "park", "museum"],
+        "place_types": ["book_store", "park", "museum", "art_gallery"],
         "why": "beautiful gentle spaces that honour and lift",
     },
 }

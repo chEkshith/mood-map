@@ -36,12 +36,13 @@ def decode_token(token: str) -> dict:
 
 def set_auth_cookies(response: Response, access_token: str, refresh_token: str) -> None:
     is_prod = settings.is_production
+    samesite = "none" if is_prod else "lax"
     response.set_cookie(
         key=ACCESS_COOKIE_NAME,
         value=access_token,
         httponly=True,
         secure=is_prod,
-        samesite="lax",
+        samesite=samesite,
         max_age=settings.jwt_access_token_expire_minutes * 60,
         path="/",
     )
@@ -50,15 +51,21 @@ def set_auth_cookies(response: Response, access_token: str, refresh_token: str) 
         value=refresh_token,
         httponly=True,
         secure=is_prod,
-        samesite="lax",
+        samesite=samesite,
         max_age=settings.jwt_refresh_token_expire_days * 24 * 60 * 60,
         path="/",
     )
 
 
 def clear_auth_cookies(response: Response) -> None:
-    response.delete_cookie(ACCESS_COOKIE_NAME, path="/")
-    response.delete_cookie(REFRESH_COOKIE_NAME, path="/")
+    is_prod = settings.is_production
+    samesite = "none" if is_prod else "lax"
+    response.delete_cookie(
+        ACCESS_COOKIE_NAME, path="/", secure=is_prod, samesite=samesite
+    )
+    response.delete_cookie(
+        REFRESH_COOKIE_NAME, path="/", secure=is_prod, samesite=samesite
+    )
 
 
 async def get_current_user(

@@ -11,10 +11,38 @@ import type {
   MoodSubmitPayload,
 } from "../types";
 
+function resolveBaseUrl(): string {
+  const configured = import.meta.env.VITE_API_URL?.trim();
+  if (!configured) return "/api/v1";
+
+  const trimmed = configured.replace(/\/+$/, "");
+  return trimmed.endsWith("/api/v1") ? trimmed : `${trimmed}/api/v1`;
+}
+
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "/api/v1",
+  baseURL: resolveBaseUrl(),
   withCredentials: true,
 });
+
+interface ApiErrorBody {
+  detail?: string;
+  message?: string;
+  errors?: Array<{ field?: string; message?: string }>;
+}
+
+export function getApiErrorMessage(error: unknown, fallback: string): string {
+  const data = (error as AxiosError<ApiErrorBody> | undefined)?.response?.data;
+  if (!data) return fallback;
+  if (data.detail) return data.detail;
+  if (data.errors?.length) {
+    return data.errors
+      .map((e) => e.message)
+      .filter(Boolean)
+      .join(", ");
+  }
+  if (data.message) return data.message;
+  return fallback;
+}
 
 interface RetryableConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;

@@ -3,6 +3,22 @@ import pytest
 from app.schemas.mood import MoodEnum
 from app.services.mood_logic import resolve_place_types
 
+VALID_GOOGLE_PLACES_TYPES = {
+    "aquarium",
+    "art_gallery",
+    "botanical_garden",
+    "book_store",
+    "cafe",
+    "library",
+    "movie_theater",
+    "museum",
+    "park",
+    "restaurant",
+    "spa",
+    "video_arcade",
+    "yoga_studio",
+}
+
 
 @pytest.mark.parametrize("mood", list(MoodEnum))
 def test_resolve_place_types_returns_valid_data(mood: MoodEnum):
@@ -14,6 +30,14 @@ def test_resolve_place_types_returns_valid_data(mood: MoodEnum):
     assert all(isinstance(t, str) for t in place_types)
     assert isinstance(why, str)
     assert len(why) > 0
+
+
+@pytest.mark.parametrize("mood", list(MoodEnum))
+def test_place_types_are_supported_by_google_places(mood: MoodEnum):
+    place_types, _, _ = resolve_place_types(mood)
+
+    assert len(place_types) <= 5
+    assert set(place_types) <= VALID_GOOGLE_PLACES_TYPES
 
 
 def test_all_moods_are_covered():

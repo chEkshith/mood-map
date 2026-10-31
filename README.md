@@ -4,20 +4,20 @@ A location-aware emotional wellness platform: describe how you feel, and MoodMap
 
 ## Tech Stack
 
-- **Backend:** FastAPI (Python 3.11), Motor (async MongoDB driver), Groq API (llama3-8b-8192) for mood classification, Google Places API (New), Cloudinary for image hosting, JWT auth via HttpOnly cookies, slowapi for rate limiting, Sentry for error tracking.
+- **Backend:** FastAPI (Python 3.11), Motor (async MongoDB driver), Groq API (`openai/gpt-oss-20b`) for mood classification, Google Places API (New), Cloudinary for image hosting, JWT auth via HttpOnly cookies, slowapi for rate limiting, Sentry for error tracking.
 - **Frontend:** React 18 + TypeScript + Vite, Tailwind CSS, Zustand for state, react-leaflet + OpenStreetMap for maps, Recharts for dashboard charts, Axios for HTTP.
 - **Infra:** Docker + docker-compose, GitHub Actions CI/CD, Render (backend) + Vercel (frontend) deployment targets.
 
 ## Architecture
 
-A user signs up or logs in, receiving a JWT pair stored in HttpOnly cookies. When they describe how they feel, the backend sends the text to Groq's llama3-8b-8192 model to classify it into one of six moods (stressed, anxious, bored, exhausted, happy, melancholic), each mapped to a "reset / shift / match" strategy and a set of Google Place types. The backend then queries the Google Places API (New) Nearby Search for those types around the user's coordinates, ranks results by Haversine distance, logs the interaction to MongoDB for history and stats, and returns the results to the React frontend, which renders them on an interactive map and as cards.
+A user signs up or logs in, receiving a JWT pair stored in HttpOnly cookies. When they describe how they feel, the backend sends the text to Groq's `openai/gpt-oss-20b` model to classify it into one of six moods (stressed, anxious, bored, exhausted, happy, melancholic), each mapped to a "reset / shift / match" strategy and a set of Google Place types. The backend then queries the Google Places API (New) Nearby Search for those types around the user's coordinates, ranks results by Haversine distance, logs the interaction to MongoDB for history and stats, and returns the results to the React frontend, which renders them on an interactive map and as cards.
 
 ## Prerequisites
 
 - Python 3.11+
 - Node.js 18+
 - Docker (optional, for containerized development)
-- A MongoDB Atlas cluster (no local MongoDB container is used)
+- A MongoDB Atlas cluster, or a local MongoDB instance (`mongodb://127.0.0.1:27017`)
 
 ## Local Development
 
@@ -56,7 +56,7 @@ npm run dev
 |---|---|
 | `GROQ_API_KEY` | API key for Groq (mood classification) |
 | `GOOGLE_PLACES_API_KEY` | API key for Google Places API (New) |
-| `MONGODB_URI` | MongoDB Atlas connection string |
+| `MONGODB_URI` | MongoDB connection string (Atlas `mongodb+srv://...` or local `mongodb://127.0.0.1:27017`) |
 | `MONGODB_DB_NAME` | Database name (default `moodmap`) |
 | `JWT_SECRET_KEY` | Secret used to sign JWTs — generate with `openssl rand -hex 32` |
 | `JWT_ALGORITHM` | JWT signing algorithm (default `HS256`) |
@@ -68,7 +68,7 @@ npm run dev
 | `SENTRY_DSN` | Optional Sentry DSN for error tracking |
 | `ENVIRONMENT` | `local` or `production` |
 | `FRONTEND_URL` | URL of the frontend, used for CORS |
-| `VITE_API_URL` (frontend) | Backend API base URL in production builds |
+| `VITE_API_URL` (frontend) | Backend origin, e.g. `https://moodmap-api.onrender.com` (the `/api/v1` prefix is appended automatically) |
 
 ## API Keys Required
 
@@ -76,6 +76,18 @@ npm run dev
 - **Google Places API (New)** — enable via Google Cloud Console
 - **MongoDB Atlas** — https://www.mongodb.com/atlas
 - **Cloudinary** — https://cloudinary.com
+
+## Troubleshooting
+
+### Login/signup fails with `SSL handshake failed ... tlsv1 alert internal error`
+
+MongoDB Atlas rejects connections from IP addresses that are not on the project's allowlist. This is the most common cause of failing signup/login during local development.
+
+1. Find your current public IP (for example `curl https://ifconfig.me`).
+2. Open Atlas → **Security → Network Access → Add IP Address**.
+3. Add your IP as a `/32` entry. For temporary local development you can use `0.0.0.0/0`, but do not use that in production.
+
+Alternatively, set `MONGODB_URI=mongodb://127.0.0.1:27017` to use a local MongoDB. The backend automatically enables TLS only for `mongodb+srv://` URIs, so local connections work without certificates.
 
 ## Deployment
 

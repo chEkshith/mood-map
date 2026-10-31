@@ -38,13 +38,14 @@ class MoodClassifier:
 
         try:
             response = await self._client.chat.completions.create(
-                model="llama3-8b-8192",
+                model="openai/gpt-oss-20b",
                 messages=[
                     {"role": "system", "content": SYSTEM_PROMPT},
                     {"role": "user", "content": text},
                 ],
                 temperature=0.2,
-                max_tokens=100,
+                max_tokens=512,
+                reasoning_effort="low",
             )
             content = response.choices[0].message.content or ""
             content = content.strip()

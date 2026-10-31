@@ -2,6 +2,7 @@ import asyncio
 
 import cloudinary
 import cloudinary.uploader
+import httpx
 
 from app.config import settings
 from app.logger import get_logger
@@ -37,17 +38,33 @@ async def upload_avatar(file_bytes: bytes, user_id: str) -> str:
 
 
 async def cache_place_photo(photo_name: str, place_id: str) -> str | None:
-    def _upload() -> str:
-        result = cloudinary.uploader.upload(
-            photo_name,
-            folder="moodmap/places/",
-            public_id=f"place_{place_id}",
-            overwrite=False,
-        )
-        return result["secure_url"]
-
     try:
+        if photo_name.startswith("http://") or photo_name.startswith("https://"):
+            image_bytes = await _download(photo_name)
+        else:
+            photo_url = (
+                f"https://places.googleapis.com/v1/{photo_name}/media"
+                f"?maxWidthPx=800&key={settings.google_places_api_key}"
+            )
+            image_bytes = await _download(photo_url)
+
+        def _upload() -> str:
+            result = cloudinary.uploader.upload(
+                image_bytes,
+                folder="moodmap/places/",
+                public_id=f"place_{place_id}",
+                overwrite=True,
+            )
+            return result["secure_url"]
+
         return await asyncio.to_thread(_upload)
     except Exception as exc:  # noqa: BLE001
         logger.error(f"Place photo caching failed for {place_id}: {exc}")
         return None
+
+
+async def _download(url: str) -> bytes:
+    async with httpx.AsyncClient(timeout=15.0, follow_redirects=True) as client:
+        response = await client.get(url)
+        response.raise_for_status()
+        return response.content

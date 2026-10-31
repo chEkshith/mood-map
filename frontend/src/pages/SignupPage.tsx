@@ -2,7 +2,7 @@ import { Eye, EyeOff, Loader2, MapPinned } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-import { authApi } from "../api/client";
+import { authApi, getApiErrorMessage } from "../api/client";
 import { useMoodStore } from "../store/moodStore";
 
 export function SignupPage() {
@@ -28,10 +28,7 @@ export function SignupPage() {
       toast.success(`Welcome to MoodMap, ${user.display_name}! 🎉`);
       navigate("/app");
     } catch (err: unknown) {
-      const msg =
-        (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail ??
-        "Signup failed. Please try again.";
-      toast.error(msg);
+      toast.error(getApiErrorMessage(err, "Signup failed. Please try again."));
     } finally {
       setIsLoading(false);
     }

@@ -2,7 +2,7 @@ import { Eye, EyeOff, Loader2, MapPinned } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-import { authApi } from "../api/client";
+import { authApi, getApiErrorMessage } from "../api/client";
 import { useMoodStore } from "../store/moodStore";
 
 export function LoginPage() {
@@ -23,10 +23,7 @@ export function LoginPage() {
       toast.success(`Welcome back, ${user.display_name}!`);
       navigate("/app");
     } catch (err: unknown) {
-      const msg =
-        (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail ??
-        "Login failed. Check your credentials.";
-      toast.error(msg);
+      toast.error(getApiErrorMessage(err, "Login failed. Check your credentials."));
     } finally {
       setIsLoading(false);
     }

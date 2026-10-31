@@ -13,6 +13,9 @@ FIELD_MASK = (
     "places.id,places.displayName,places.formattedAddress,"
     "places.location,places.types,places.rating,places.photos"
 )
+RESULT_LIMIT = 6
+CANDIDATE_LIMIT = 20
+MAX_INCLUDED_TYPES = 5
 
 
 class GooglePlacesService:
@@ -29,8 +32,8 @@ class GooglePlacesService:
     ) -> list[PlaceSuggestion]:
         try:
             body = {
-                "includedTypes": [place_types[0]],
-                "maxResultCount": 6,
+                "includedTypes": place_types[:MAX_INCLUDED_TYPES],
+                "maxResultCount": CANDIDATE_LIMIT,
                 "locationRestriction": {
                     "circle": {
                         "center": {"latitude": lat, "longitude": lng},
@@ -81,11 +84,58 @@ class GooglePlacesService:
             suggestions.sort(
                 key=lambda p: p.distance_meters if p.distance_meters is not None else 10**9
             )
-            return suggestions
+            return self._diversify(suggestions, place_types)
 
         except Exception as exc:  # noqa: BLE001
             logger.error(f"Google Places search failed, returning fallback: {exc}")
             return self._fallback_places(lat, lng, why)
+
+    @staticmethod
+    def _diversify(
+        suggestions: list[PlaceSuggestion],
+        requested_types: list[str],
+        limit: int = RESULT_LIMIT,
+    ) -> list[PlaceSuggestion]:
+        if len(suggestions) <= limit:
+            return suggestions
+
+        by_type: dict[str, list[PlaceSuggestion]] = {t: [] for t in requested_types}
+        for suggestion in suggestions:
+            for place_type in requested_types:
+                if place_type in suggestion.place_types:
+                    by_type[place_type].append(suggestion)
+
+        selected: list[PlaceSuggestion] = []
+        selected_ids: set[str] = set()
+
+        while len(selected) < limit:
+            added = False
+            for place_type in requested_types:
+                for suggestion in by_type[place_type]:
+                    if suggestion.place_id in selected_ids:
+                        continue
+                    selected.append(suggestion)
+                    selected_ids.add(suggestion.place_id)
+                    added = True
+                    break
+                if len(selected) >= limit:
+                    break
+            if not added:
+                break
+
+        if len(selected) < limit:
+            for suggestion in suggestions:
+                if suggestion.place_id in selected_ids:
+                    continue
+                selected.append(suggestion)
+                selected_ids.add(suggestion.place_id)
+                if len(selected) >= limit:
+                    break
+
+        selected.sort(
+            key=lambda p: p.distance_meters if p.distance_meters is not None else 10**9
+        )
+        return selected
 
     def _fallback_places(self, lat: float, lng: float, why: str) -> list[PlaceSuggestion]:
         offsets = [(0.003, 0.003), (-0.003, 0.002), (0.001, -0.003)]

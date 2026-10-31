@@ -35,8 +35,10 @@ history_svc = HistoryService()
 
 async def _update_streak(user: dict, db: AsyncIOMotorDatabase) -> None:
     now = datetime.now(timezone.utc)
+    # The current entry has already been logged, so skip it to find the
+    # previous entry when deciding whether the streak continues.
     last_login_entry = await db.mood_entries.find_one(
-        {"user_id": user["_id"]}, sort=[("created_at", -1)]
+        {"user_id": user["_id"]}, sort=[("created_at", -1)], skip=1
     )
 
     new_streak = user.get("mood_streak", 0)

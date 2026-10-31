@@ -109,7 +109,7 @@ export function MoodInputForm() {
             id="radius"
             type="range"
             min={500}
-            max={5000}
+            max={10000}
             step={500}
             value={radiusMeters}
             onChange={(e) => setRadius(Number(e.target.value))}
@@ -117,7 +117,7 @@ export function MoodInputForm() {
           />
           <div className="flex justify-between text-xs text-slate-600 mt-1">
             <span>0.5 km</span>
-            <span>5 km</span>
+            <span>10 km</span>
           </div>
         </div>
 

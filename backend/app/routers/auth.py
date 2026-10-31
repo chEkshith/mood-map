@@ -4,7 +4,9 @@ from bson import ObjectId
 from fastapi import APIRouter, Depends, File, HTTPException, Request, Response, UploadFile, status
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from passlib.context import CryptContext
+from pymongo.errors import DuplicateKeyError
 
+from app.config import settings
 from app.db import get_db
 from app.logger import get_logger
 from app.middleware.auth_middleware import (
@@ -84,7 +86,12 @@ async def signup(
         "mood_streak": 0,
         "total_entries": 0,
     }
-    result = await db.users.insert_one(doc)
+    try:
+        result = await db.users.insert_one(doc)
+    except DuplicateKeyError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Email already registered"
+        ) from exc
     doc["_id"] = result.inserted_id
 
     await _issue_session(response, str(result.inserted_id), db)
