@@ -1,16 +1,18 @@
-import { Loader2, MapPin } from "lucide-react";
+import { Loader2, MapPin, Send } from "lucide-react";
 import { useState, type FormEvent } from "react";
+import toast from "react-hot-toast";
 import { useGeolocation } from "../hooks/useGeolocation";
 import { useMoodStore } from "../store/moodStore";
 
 const MAX_CHARS = 500;
 
-const LOCATION_LABEL: Record<string, string> = {
-  idle: "Waiting for location…",
-  requesting: "Requesting your location…",
-  granted: "Location ready",
-  denied: "Location unavailable — enable it to see nearby places",
-};
+const MOOD_SUGGESTIONS = [
+  "I feel completely drained after back-to-back meetings",
+  "So anxious about tomorrow's presentation",
+  "Just bored and need something to do",
+  "Happy and want to celebrate with friends",
+  "Feeling melancholic and need some calm",
+];
 
 export function MoodInputForm() {
   const [text, setText] = useState("");
@@ -19,76 +21,130 @@ export function MoodInputForm() {
   const setRadius = useMoodStore((s) => s.setRadius);
   const submitMood = useMoodStore((s) => s.submitMood);
   const apiStatus = useMoodStore((s) => s.apiStatus);
+  const errorMessage = useMoodStore((s) => s.errorMessage);
 
   const isLoading = apiStatus === "loading";
   const canSubmit = text.trim().length >= 2 && locationStatus === "granted" && !isLoading;
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!canSubmit) return;
+    if (!canSubmit) {
+      if (locationStatus !== "granted") {
+        toast.error("Please allow location access to find nearby places.");
+      }
+      return;
+    }
     await submitMood(text.trim());
+    if (apiStatus === "error" && errorMessage) {
+      toast.error(errorMessage);
+    }
+  };
+
+  const locationColor =
+    locationStatus === "granted"
+      ? "text-emerald-400"
+      : locationStatus === "denied"
+      ? "text-red-400"
+      : "text-slate-500";
+
+  const locationLabel: Record<string, string> = {
+    idle: "Detecting location…",
+    requesting: "Requesting location…",
+    granted: "Location ready",
+    denied: "Location blocked — enable it in browser settings",
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white rounded-xl shadow-sm p-6 space-y-4 border border-gray-100"
-    >
+    <div className="card p-5 space-y-4">
       <div>
-        <label htmlFor="mood-text" className="block text-sm font-medium text-gray-700 mb-1">
-          How are you feeling?
-        </label>
-        <textarea
-          id="mood-text"
-          rows={4}
-          maxLength={MAX_CHARS}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Describe how you're feeling..."
-          className="w-full rounded-lg border border-gray-300 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
-        />
-        <div className="text-right text-xs text-gray-400 mt-1">
-          {text.length}/{MAX_CHARS}
+        <h2 className="text-sm font-semibold text-white mb-0.5">How are you feeling?</h2>
+        <p className="text-xs text-slate-500">Describe your mood in your own words</p>
+      </div>
+
+      {/* Suggestion chips */}
+      <div className="flex flex-wrap gap-1.5">
+        {MOOD_SUGGESTIONS.slice(0, 3).map((s) => (
+          <button
+            key={s}
+            type="button"
+            onClick={() => setText(s)}
+            className="text-xs px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-slate-400
+                       hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-indigo-300 transition-all"
+          >
+            {s.split(" ").slice(0, 5).join(" ")}…
+          </button>
+        ))}
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <textarea
+            id="mood-text"
+            rows={4}
+            maxLength={MAX_CHARS}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="E.g. I feel exhausted and overwhelmed after a long week…"
+            className="input-field resize-none"
+          />
+          <div className="flex justify-between items-center mt-1.5">
+            <span className="text-xs text-slate-600">Be as descriptive as you like</span>
+            <span className={`text-xs font-medium ${text.length > MAX_CHARS * 0.85 ? "text-amber-400" : "text-slate-600"}`}>
+              {text.length}/{MAX_CHARS}
+            </span>
+          </div>
         </div>
-      </div>
 
-      <div>
-        <label htmlFor="radius" className="block text-sm font-medium text-gray-700 mb-1">
-          Search radius: {(radiusMeters / 1000).toFixed(1)}km
-        </label>
-        <input
-          id="radius"
-          type="range"
-          min={500}
-          max={5000}
-          step={500}
-          value={radiusMeters}
-          onChange={(e) => setRadius(Number(e.target.value))}
-          className="w-full accent-indigo-600"
-        />
-      </div>
+        {/* Radius slider */}
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <label htmlFor="radius" className="text-xs font-medium text-slate-400">
+              Search radius
+            </label>
+            <span className="text-xs font-semibold text-indigo-400">
+              {(radiusMeters / 1000).toFixed(1)} km
+            </span>
+          </div>
+          <input
+            id="radius"
+            type="range"
+            min={500}
+            max={5000}
+            step={500}
+            value={radiusMeters}
+            onChange={(e) => setRadius(Number(e.target.value))}
+            className="w-full"
+          />
+          <div className="flex justify-between text-xs text-slate-600 mt-1">
+            <span>0.5 km</span>
+            <span>5 km</span>
+          </div>
+        </div>
 
-      <div className="flex items-center gap-2 text-sm text-gray-500">
-        <MapPin
-          className={`h-4 w-4 ${
-            locationStatus === "granted"
-              ? "text-green-500"
-              : locationStatus === "denied"
-              ? "text-red-500"
-              : "text-gray-400"
-          }`}
-        />
-        <span>{LOCATION_LABEL[locationStatus]}</span>
-      </div>
+        {/* Location status */}
+        <div className="flex items-center gap-2">
+          <MapPin className={`h-3.5 w-3.5 flex-shrink-0 ${locationColor}`} />
+          <span className={`text-xs ${locationColor}`}>{locationLabel[locationStatus]}</span>
+        </div>
 
-      <button
-        type="submit"
-        disabled={!canSubmit}
-        className="w-full flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-700 text-white font-medium py-2.5 disabled:opacity-50 disabled:cursor-not-allowed hover:from-indigo-700 hover:to-indigo-800 transition"
-      >
-        {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
-        {isLoading ? "Finding places..." : "Find places for my mood"}
-      </button>
-    </form>
+        <button
+          type="submit"
+          disabled={!canSubmit}
+          className="btn-primary w-full !py-3"
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Analyzing mood & finding places…
+            </>
+          ) : (
+            <>
+              <Send className="h-4 w-4" />
+              Find places for my mood
+            </>
+          )}
+        </button>
+      </form>
+    </div>
   );
 }

@@ -32,11 +32,14 @@ apiClient.interceptors.response.use(
       !originalRequest.url?.includes("/auth/refresh")
     ) {
       originalRequest._retry = true;
-      try {
+            try {
         await apiClient.post("/auth/refresh");
         return apiClient(originalRequest);
       } catch {
-        if (typeof window !== "undefined") {
+        const onAuthPage =
+          typeof window !== "undefined" &&
+          (window.location.pathname === "/login" || window.location.pathname === "/signup");
+        if (typeof window !== "undefined" && !onAuthPage) {
           window.location.href = "/login";
         }
         return Promise.reject(error);
