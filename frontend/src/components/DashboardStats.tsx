@@ -23,12 +23,13 @@ const MOOD_COLORS: Record<string, string> = {
 
 const CHART_AXIS_STYLE = { fontSize: 11, fill: "#64748b", fontFamily: "Inter, sans-serif" };
 const CHART_TOOLTIP_STYLE = {
-  backgroundColor: "#1e293b",
-  border: "1px solid rgba(255,255,255,0.08)",
+  backgroundColor: "rgba(15, 23, 42, 0.78)",
+  border: "1px solid rgba(255,255,255,0.15)",
   borderRadius: "10px",
   color: "#f1f5f9",
   fontSize: "12px",
   fontFamily: "Inter, sans-serif",
+  backdropFilter: "blur(16px)",
 };
 
 interface Props {

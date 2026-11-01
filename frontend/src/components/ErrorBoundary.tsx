@@ -1,5 +1,6 @@
 import { AlertTriangle } from "lucide-react";
 import { Component, type ErrorInfo, type ReactNode } from "react";
+import BackgroundVideo from "../BackgroundVideo";
 
 interface Props {
   children: ReactNode;
@@ -27,21 +28,24 @@ export class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-          <div className="bg-white rounded-xl shadow-md p-8 max-w-sm w-full text-center">
-            <AlertTriangle className="mx-auto h-12 w-12 text-amber-500 mb-4" />
-            <h1 className="text-lg font-bold text-gray-900 mb-2">Something went wrong</h1>
-            <p className="text-sm text-gray-500 mb-6">
-              An unexpected error occurred. Try reloading the page.
-            </p>
-            <button
-              onClick={this.handleReload}
-              className="w-full rounded-lg bg-indigo-600 text-white font-medium py-2 hover:bg-indigo-700 transition"
-            >
-              Reload
-            </button>
+        <>
+          <BackgroundVideo />
+          <div className="relative z-10 min-h-screen flex items-center justify-center px-4">
+            <div className="glass rounded-3xl p-8 max-w-sm w-full text-center">
+              <AlertTriangle className="mx-auto h-12 w-12 text-amber-400 mb-4" />
+              <h1 className="text-lg font-bold text-white mb-2">Something went wrong</h1>
+              <p className="text-sm text-slate-400 mb-6">
+                An unexpected error occurred. Try reloading the page.
+              </p>
+              <button
+                onClick={this.handleReload}
+                className="btn-primary w-full"
+              >
+                Reload
+              </button>
+            </div>
           </div>
-        </div>
+        </>
       );
     }
 

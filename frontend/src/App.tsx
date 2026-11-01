@@ -2,6 +2,7 @@ import { BarChart2, Clock, LogOut, MapPinned, Menu, User, X } from "lucide-react
 import { useState } from "react";
 import { NavLink, Outlet, Route, Routes, useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import BackgroundVideo from "./BackgroundVideo";
 import { authApi } from "./api/client";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { useAuth } from "./hooks/useAuth";
@@ -151,39 +152,20 @@ function ProtectedLayout() {
 export default function App() {
   const { isLoading } = useAuth();
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="h-10 w-10 rounded-2xl bg-indigo-500/20 flex items-center justify-center ring-1 ring-indigo-500/30">
-            <MapPinned className="h-5 w-5 text-indigo-400 animate-pulse" />
-          </div>
-          <div className="flex gap-1">
-            {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                className="h-1.5 w-1.5 rounded-full bg-indigo-500 animate-bounce"
-                style={{ animationDelay: `${i * 0.15}s` }}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <>
+      <BackgroundVideo />
       <Toaster
         position="top-right"
         toastOptions={{
           style: {
-            background: "#1e293b",
+            background: "rgba(15, 23, 42, 0.72)",
             color: "#f1f5f9",
-            border: "1px solid rgba(255,255,255,0.1)",
+            border: "1px solid rgba(255,255,255,0.15)",
             borderRadius: "12px",
             fontSize: "14px",
             fontFamily: "Inter, sans-serif",
+            backdropFilter: "blur(18px) saturate(160%)",
           },
           success: {
             iconTheme: { primary: "#818cf8", secondary: "#1e293b" },
@@ -193,22 +175,44 @@ export default function App() {
           },
         }}
       />
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
 
-        <Route element={<ProtectedRoute />}>
-          <Route element={<ProtectedLayout />}>
-            <Route path="/app" element={<AppPage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/history" element={<HistoryPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
-          </Route>
-        </Route>
+      <div className="relative z-10">
+        {isLoading ? (
+          <div className="min-h-screen flex items-center justify-center">
+            <div className="glass rounded-3xl px-8 py-7 flex flex-col items-center gap-4">
+              <div className="h-10 w-10 rounded-2xl bg-indigo-500/20 flex items-center justify-center ring-1 ring-indigo-500/30">
+                <MapPinned className="h-5 w-5 text-indigo-400 animate-pulse" />
+              </div>
+              <div className="flex gap-1">
+                {[0, 1, 2].map((i) => (
+                  <div
+                    key={i}
+                    className="h-1.5 w-1.5 rounded-full bg-indigo-500 animate-bounce"
+                    style={{ animationDelay: `${i * 0.15}s` }}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
 
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+            <Route element={<ProtectedRoute />}>
+              <Route element={<ProtectedLayout />}>
+                <Route path="/app" element={<AppPage />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/history" element={<HistoryPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+              </Route>
+            </Route>
+
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        )}
+      </div>
     </>
   );
 }

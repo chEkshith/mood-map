@@ -83,12 +83,6 @@ export function LandingPage() {
 
       {/* Hero */}
       <section className="relative overflow-hidden py-24 md:py-36 px-4">
-        {/* Background glows */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-indigo-500/10 rounded-full blur-[100px]" />
-          <div className="absolute top-1/3 left-1/4 w-[300px] h-[300px] bg-violet-500/8 rounded-full blur-[80px]" />
-        </div>
-
         <div className="max-w-4xl mx-auto text-center relative">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-medium mb-6 animate-fade-in">
             <Zap className="h-3 w-3" />

@@ -4,12 +4,7 @@ import { Link } from "react-router-dom";
 export function NotFoundPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center">
-      {/* Background glow */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-500/8 rounded-full blur-[80px]" />
-      </div>
-
-      <div className="relative animate-scale-in">
+      <div className="relative animate-scale-in glass rounded-3xl p-10 max-w-lg w-full">
         <div className="h-16 w-16 rounded-2xl bg-indigo-500/15 flex items-center justify-center ring-1 ring-indigo-500/25 mx-auto mb-6">
           <MapPinned className="h-8 w-8 text-indigo-400" />
         </div>

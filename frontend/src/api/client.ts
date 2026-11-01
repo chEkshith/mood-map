@@ -60,14 +60,15 @@ apiClient.interceptors.response.use(
       !originalRequest.url?.includes("/auth/refresh")
     ) {
       originalRequest._retry = true;
-            try {
+      try {
         await apiClient.post("/auth/refresh");
         return apiClient(originalRequest);
       } catch {
-        const onAuthPage =
-          typeof window !== "undefined" &&
-          (window.location.pathname === "/login" || window.location.pathname === "/signup");
-        if (typeof window !== "undefined" && !onAuthPage) {
+        const path = typeof window !== "undefined" ? window.location.pathname : "";
+        const isProtectedPage = ["/app", "/dashboard", "/history", "/profile"].some(
+          (route) => path === route || path.startsWith(`${route}/`)
+        );
+        if (typeof window !== "undefined" && isProtectedPage) {
           window.location.href = "/login";
         }
         return Promise.reject(error);

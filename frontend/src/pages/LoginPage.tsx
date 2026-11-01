@@ -32,11 +32,7 @@ export function LoginPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left decorative panel */}
-      <div className="hidden lg:flex flex-col justify-between w-1/2 p-12 bg-gradient-to-br from-indigo-950 via-slate-950 to-slate-950 border-r border-white/8 relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-indigo-500/12 rounded-full blur-[80px]" />
-          <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] bg-violet-500/8 rounded-full blur-[60px]" />
-        </div>
+      <div className="hidden lg:flex flex-col justify-between w-1/2 p-12 border-r border-white/10 bg-slate-950/20 backdrop-blur-2xl relative overflow-hidden">
         <div className="relative flex items-center gap-2">
           <div className="h-8 w-8 rounded-xl bg-indigo-500/20 flex items-center justify-center ring-1 ring-indigo-500/30">
             <MapPinned className="h-4 w-4 text-indigo-400" />
@@ -68,7 +64,7 @@ export function LoginPage() {
           <span className="font-bold text-white">MoodMap</span>
         </Link>
 
-        <div className="w-full max-w-sm animate-slide-up">
+        <div className="w-full max-w-sm animate-slide-up glass rounded-3xl p-6 sm:p-8">
           <div className="mb-8">
             <h1 className="text-2xl font-bold text-white mb-1">Welcome back</h1>
             <p className="text-slate-400 text-sm">Sign in to your MoodMap account</p>

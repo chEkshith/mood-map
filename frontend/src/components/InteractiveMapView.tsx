@@ -53,8 +53,9 @@ export function InteractiveMapView() {
     : [16.5062, 80.648];
 
   return (
-    <div className="h-64 lg:h-80 rounded-xl overflow-hidden shadow-sm border border-gray-100 relative">
-      <style>{`
+    <div className="glass h-64 lg:h-80 rounded-2xl overflow-hidden relative p-1.5">
+      <div className="h-full w-full rounded-xl overflow-hidden">
+        <style>{`
         @keyframes moodmap-bounce {
           from { transform: translateY(0); }
           to { transform: translateY(-4px); }
@@ -96,6 +97,7 @@ export function InteractiveMapView() {
           </Marker>
         ))}
       </MapContainer>
+      </div>
     </div>
   );
 }
