@@ -65,7 +65,7 @@ export function LandingPage() {
     <div className="min-h-screen">
       {/* Dark overlay to improve content contrast over the background video */}
       <div
-        className="pointer-events-none fixed inset-0 -z-10 bg-black/55"
+        className="pointer-events-none fixed inset-0 -z-10 bg-black/70"
         aria-hidden="true"
       />
 
