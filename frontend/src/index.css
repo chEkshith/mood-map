@@ -916,6 +916,13 @@
   .animate-scale-in {
     animation: scaleIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   }
+
+  .mood-emoji-fall {
+    animation-name: moodEmojiFall;
+    animation-timing-function: cubic-bezier(0.18, 0.72, 0.28, 1);
+    animation-fill-mode: forwards;
+    will-change: transform, opacity;
+  }
 }
 
 /* ===== Keyframes ===== */
@@ -937,6 +944,24 @@
 @keyframes scaleIn {
   from { opacity: 0; transform: scale(0.9); }
   to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes moodEmojiFall {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 6.25rem, 0) rotate(0deg) scale(0.75);
+  }
+  12% {
+    opacity: 1;
+  }
+  78% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--mood-drift, 0px), 84vh, 0)
+      rotate(var(--mood-rotate, 24deg)) scale(1.15);
+  }
 }
 
 @keyframes navSheen {

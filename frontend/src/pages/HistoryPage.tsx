@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { moodApi } from "../api/client";
 import { AnimatedNumber } from "../components/AnimatedNumber";
+import { MoodEmojiRain } from "../components/MoodEmojiRain";
 import { useMoodStore } from "../store/moodStore";
 import type { HistoryEntry, MoodEnum } from "../types";
 
@@ -202,6 +203,7 @@ export function HistoryPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 md:px-8 md:py-8">
+      <MoodEmojiRain />
       <section
         className="relative overflow-hidden rounded-[1.5rem] border border-white/10 bg-gradient-to-br from-[#16182d]/95 via-[#0a0c1b]/90 to-[#06070f]/88 p-5 backdrop-blur-xl anim-stagger md:p-6"
         style={{ animationDelay: "0.1s" }}
