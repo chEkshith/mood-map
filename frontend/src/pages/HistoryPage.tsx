@@ -72,10 +72,18 @@ export function HistoryPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 space-y-5 animate-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div
+        className="flex items-center justify-between anim-stagger"
+        style={{ animationDelay: "0.45s" }}
+      >
         <div>
-          <h1 className="text-xl font-bold text-white">History</h1>
-          <p className="text-sm text-slate-400 mt-0.5">{history.length} entries</p>
+          <span className="glass-chip px-3 py-1 text-[10px] uppercase tracking-[0.28em] text-violet-100/70 mb-3">
+            Timeline
+          </span>
+          <h1 className="font-display text-3xl md:text-4xl font-semibold text-white tracking-tight">
+            Mood <span className="text-gradient">history</span>
+          </h1>
+          <p className="text-sm text-white/50 mt-1.5">{history.length} entries</p>
         </div>
 
         {/* Filter */}
@@ -93,12 +101,12 @@ export function HistoryPage() {
       </div>
 
       {/* Entries */}
-      <div className="space-y-3">
+      <div className="space-y-3 anim-stagger" style={{ animationDelay: "0.55s" }}>
         {history.length === 0 && (
           <div className="card p-10 text-center">
-            <Clock className="h-8 w-8 text-slate-600 mx-auto mb-3" />
-            <p className="text-sm text-slate-400">No history entries yet.</p>
-            <p className="text-xs text-slate-600 mt-1">Submit your first mood to see it here.</p>
+            <Clock className="h-8 w-8 text-white/25 mx-auto mb-3" />
+            <p className="text-sm text-white/55">No history entries yet.</p>
+            <p className="text-xs text-white/30 mt-1">Submit your first mood to see it here.</p>
           </div>
         )}
 
@@ -112,30 +120,30 @@ export function HistoryPage() {
               <span className="text-2xl shrink-0 mt-0.5">{MOOD_EMOJI[entry.classified_mood]}</span>
 
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-slate-200 line-clamp-2 leading-relaxed mb-1.5">
+                <p className="text-sm text-white/80 line-clamp-2 leading-relaxed mb-1.5">
                   {entry.raw_text}
                 </p>
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className={`text-xs font-medium capitalize ${MOOD_COLOR[entry.classified_mood]}`}>
                     {entry.classified_mood}
                   </span>
-                  <span className="text-slate-700">·</span>
+                  <span className="text-white/20">·</span>
                   <span
-                    className={`px-2 py-0.5 rounded-full text-xs font-semibold border capitalize ${
-                      STRATEGY_BADGE[entry.strategy] ?? "bg-slate-500/15 text-slate-300 border-slate-500/20"
+                    className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border capitalize backdrop-blur-md ${
+                      STRATEGY_BADGE[entry.strategy] ?? "bg-white/10 text-slate-300 border-white/15"
                     }`}
                   >
                     {entry.strategy}
                   </span>
-                  <span className="text-slate-700">·</span>
-                  <span className="text-xs text-slate-500">
+                  <span className="text-white/20">·</span>
+                  <span className="text-xs text-white/35">
                     {entry.places_count} place{entry.places_count !== 1 ? "s" : ""}
                   </span>
                 </div>
               </div>
 
               <div className="flex flex-col items-end gap-2 shrink-0">
-                <span className="text-xs text-slate-600">
+                <span className="text-xs text-white/30">
                   {new Date(entry.created_at).toLocaleDateString(undefined, {
                     month: "short", day: "numeric",
                   })}
@@ -146,7 +154,7 @@ export function HistoryPage() {
                     handleDelete(entry.id);
                   }}
                   disabled={deletingId === entry.id}
-                  className="p-1.5 rounded-lg text-slate-600 hover:text-red-400 hover:bg-red-500/10
+                  className="p-1.5 rounded-lg text-white/30 hover:text-rose-300 hover:bg-rose-500/10
                              transition-all opacity-0 group-hover:opacity-100"
                   aria-label="Delete entry"
                 >
@@ -161,18 +169,18 @@ export function HistoryPage() {
       {/* Entry Detail Modal */}
       {selectedEntry && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in"
+          className="fixed inset-0 bg-black/45 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fade-in"
           onClick={() => setSelectedEntry(null)}
         >
           <div
-            className="glass rounded-2xl max-w-md w-full p-6 max-h-[80vh] overflow-y-auto animate-scale-in"
+            className="glass-strong rounded-[1.75rem] max-w-md w-full p-6 max-h-[80vh] overflow-y-auto animate-scale-in"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base font-bold text-white">Entry details</h2>
+              <h2 className="text-base font-semibold font-display text-white tracking-tight">Entry details</h2>
               <button
                 onClick={() => setSelectedEntry(null)}
-                className="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-colors"
+                className="glass-icon h-8 w-8 rounded-lg text-white/50 hover:text-white transition-colors"
                 aria-label="Close"
               >
                 <X className="h-4 w-4" />
@@ -189,15 +197,15 @@ export function HistoryPage() {
                 ["Places suggested", String((selectedEntry.places_suggested as unknown[])?.length ?? 0)],
               ].map(([key, val]) => (
                 <div key={key} className="flex justify-between gap-4">
-                  <span className="text-slate-500 shrink-0">{key}</span>
-                  <span className="text-slate-200 text-right capitalize">{val}</span>
+                  <span className="text-white/40">{key}</span>
+                  <span className="text-white/80 text-right capitalize">{val}</span>
                 </div>
               ))}
             </div>
 
-            <div className="mt-4 pt-4 border-t border-white/5">
-              <p className="text-xs text-slate-500 mb-2">Original text</p>
-              <p className="text-sm text-slate-300 leading-relaxed">
+            <div className="mt-4 pt-4 border-t border-white/10">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40 mb-2">Original text</p>
+              <p className="text-sm text-white/65 leading-relaxed">
                 {String(selectedEntry.raw_text ?? "")}
               </p>
             </div>

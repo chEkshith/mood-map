@@ -21,15 +21,16 @@ const MOOD_COLORS: Record<string, string> = {
   melancholic: "#60a5fa",
 };
 
-const CHART_AXIS_STYLE = { fontSize: 11, fill: "#64748b", fontFamily: "Inter, sans-serif" };
+const CHART_AXIS_STYLE = { fontSize: 11, fill: "#94a3b8", fontFamily: "Plus Jakarta Sans, sans-serif" };
 const CHART_TOOLTIP_STYLE = {
-  backgroundColor: "rgba(15, 23, 42, 0.78)",
-  border: "1px solid rgba(255,255,255,0.15)",
-  borderRadius: "10px",
-  color: "#f1f5f9",
+  backgroundColor: "rgba(18, 19, 38, 0.72)",
+  border: "1px solid rgba(255,255,255,0.18)",
+  borderRadius: "12px",
+  color: "#f8fafc",
   fontSize: "12px",
-  fontFamily: "Inter, sans-serif",
-  backdropFilter: "blur(16px)",
+  fontFamily: "Plus Jakarta Sans, sans-serif",
+  backdropFilter: "blur(18px) saturate(180%)",
+  boxShadow: "0 18px 50px -16px rgba(2,6,23,0.8), inset 0 1px 0 rgba(255,255,255,0.2)",
 };
 
 interface Props {
@@ -54,7 +55,7 @@ export function DashboardStats({ stats }: Props) {
     <div className="space-y-4">
       {/* Mood Frequency Bar Chart */}
       <div className="card p-5">
-        <h3 className="text-sm font-semibold text-white mb-4">Mood frequency</h3>
+        <h3 className="text-sm font-semibold text-white mb-4 tracking-tight">Mood frequency</h3>
         {hasMoodFreq ? (
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={stats.mood_frequency} barSize={32}>
@@ -74,14 +75,14 @@ export function DashboardStats({ stats }: Props) {
           </ResponsiveContainer>
         ) : (
           <div className="h-48 flex items-center justify-center">
-            <p className="text-sm text-slate-500">No mood data yet</p>
+            <p className="text-sm text-white/40">No mood data yet</p>
           </div>
         )}
       </div>
 
       {/* Mood Trend Line Chart */}
       <div className="card p-5">
-        <h3 className="text-sm font-semibold text-white mb-4">Activity trend (30 days)</h3>
+        <h3 className="text-sm font-semibold text-white mb-4 tracking-tight">Activity trend (30 days)</h3>
         {hasTrend ? (
           <ResponsiveContainer width="100%" height={200}>
             <LineChart data={trendByDate}>
@@ -92,16 +93,16 @@ export function DashboardStats({ stats }: Props) {
               <Line
                 type="monotone"
                 dataKey="count"
-                stroke="#818cf8"
+                stroke="#a78bfa"
                 strokeWidth={2.5}
                 dot={false}
-                activeDot={{ r: 4, fill: "#818cf8", strokeWidth: 0 }}
+                activeDot={{ r: 4, fill: "#c4b5fd", strokeWidth: 0 }}
               />
             </LineChart>
           </ResponsiveContainer>
         ) : (
           <div className="h-48 flex items-center justify-center">
-            <p className="text-sm text-slate-500">No trend data yet</p>
+            <p className="text-sm text-white/40">No trend data yet</p>
           </div>
         )}
       </div>

@@ -53,8 +53,8 @@ export function InteractiveMapView() {
     : [16.5062, 80.648];
 
   return (
-    <div className="glass h-64 lg:h-80 rounded-2xl overflow-hidden relative p-1.5">
-      <div className="h-full w-full rounded-xl overflow-hidden">
+    <div className="glass h-64 lg:h-80 rounded-[1.5rem] overflow-hidden relative p-2">
+      <div className="h-full w-full rounded-[1.1rem] overflow-hidden ring-1 ring-white/10">
         <style>{`
         @keyframes moodmap-bounce {
           from { transform: translateY(0); }

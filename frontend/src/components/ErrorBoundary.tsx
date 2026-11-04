@@ -1,6 +1,7 @@
 import { AlertTriangle } from "lucide-react";
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import BackgroundVideo from "../BackgroundVideo";
+import { AuroraBackground } from "./AuroraBackground";
 
 interface Props {
   children: ReactNode;
@@ -30,11 +31,14 @@ export class ErrorBoundary extends Component<Props, State> {
       return (
         <>
           <BackgroundVideo />
+          <AuroraBackground className="fixed inset-0 z-0" />
           <div className="relative z-10 min-h-screen flex items-center justify-center px-4">
-            <div className="glass rounded-3xl p-8 max-w-sm w-full text-center">
-              <AlertTriangle className="mx-auto h-12 w-12 text-amber-400 mb-4" />
-              <h1 className="text-lg font-bold text-white mb-2">Something went wrong</h1>
-              <p className="text-sm text-slate-400 mb-6">
+            <div className="glass-strong rounded-[1.75rem] p-8 max-w-sm w-full text-center">
+              <div className="glass-icon h-14 w-14 mx-auto mb-4">
+                <AlertTriangle className="h-6 w-6 text-amber-300" />
+              </div>
+              <h1 className="text-lg font-semibold font-display text-white mb-2 tracking-tight">Something went wrong</h1>
+              <p className="text-sm text-white/50 mb-6">
                 An unexpected error occurred. Try reloading the page.
               </p>
               <button

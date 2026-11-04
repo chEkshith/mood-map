@@ -12,7 +12,6 @@ export default function BackgroundVideo() {
       >
         <source src="/bg_video.mp4" type="video/mp4" />
       </video>
-      <div className="site-bg__overlay" />
     </div>
   );
 }

@@ -3,6 +3,10 @@ import { useState } from "react";
 import { NavLink, Outlet, Route, Routes, useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import BackgroundVideo from "./BackgroundVideo";
+import { AuroraBackground } from "./components/AuroraBackground";
+import { IntroSplash } from "./components/IntroSplash";
+import { VortxBackground } from "./components/VortxBackground";
+import { VortxLogo } from "./components/VortxLogo";
 import { authApi } from "./api/client";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { useAuth } from "./hooks/useAuth";
@@ -23,7 +27,19 @@ const NAV_LINKS = [
   { to: "/profile", label: "Profile", icon: User },
 ];
 
-function NavBar() {
+function PublicLayout() {
+  return (
+    <>
+      <BackgroundVideo />
+      <AuroraBackground className="fixed inset-0 z-0" />
+      <div className="relative z-10">
+        <Outlet />
+      </div>
+    </>
+  );
+}
+
+function VortxLayout() {
   const navigate = useNavigate();
   const user = useMoodStore((s) => s.user);
   const clearUser = useMoodStore((s) => s.clearUser);
@@ -36,115 +52,125 @@ function NavBar() {
   };
 
   return (
-    <header className="glass sticky top-0 z-40 border-b border-white/8">
-      <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-        {/* Logo */}
-        <NavLink to="/app" className="flex items-center gap-2 group">
-          <div className="h-8 w-8 rounded-xl bg-indigo-500/20 flex items-center justify-center ring-1 ring-indigo-500/30 group-hover:bg-indigo-500/30 transition-all">
-            <MapPinned className="h-4 w-4 text-indigo-400" />
-          </div>
-          <span className="font-bold text-white tracking-tight">
-            Mood<span className="text-gradient">Map</span>
-          </span>
-        </NavLink>
+    <div className="h-screen w-full bg-black p-3 md:p-4 font-inter">
+      <div className="w-full h-full rounded-[1.75rem] flex flex-col overflow-hidden relative bg-black/40 ring-1 ring-white/10">
+        <VortxBackground />
+        <AuroraBackground className="absolute inset-0 z-0" />
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-1">
-          {NAV_LINKS.map(({ to, label, icon: Icon }) => (
-            <NavLink
-              key={to}
-              to={to}
-              className={({ isActive }) =>
-                `flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-150
-                 ${isActive
-                   ? "bg-indigo-500/15 text-indigo-300 ring-1 ring-indigo-500/25"
-                   : "text-slate-400 hover:text-white hover:bg-white/5"
-                 }`
-              }
+        <nav className="relative z-10 mx-3 mt-3 md:mx-5 md:mt-5 flex items-center justify-between gap-3 rounded-2xl glass px-3 py-2.5 md:px-5 md:py-3">
+          <NavLink
+            to="/app"
+            className="anim-stagger flex items-center gap-3 group"
+            style={{ animationDelay: "0.1s" }}
+          >
+            <span className="glass-icon h-10 w-10 md:h-11 md:w-11 rounded-xl transition-transform duration-300 group-hover:scale-105">
+              <VortxLogo className="w-6 h-6 md:w-7 md:h-7" />
+            </span>
+            <span className="flex flex-col">
+              <span className="text-white text-[10px] md:text-xs tracking-[0.4em] font-light">
+                V O R T X
+              </span>
+              <span className="text-[8px] md:text-[9px] uppercase tracking-[0.28em] text-white/40">
+                Creations
+              </span>
+            </span>
+          </NavLink>
+
+          <div
+            className="anim-stagger flex items-center gap-2 md:gap-3"
+            style={{ animationDelay: "0.2s" }}
+          >
+            <nav className="hidden md:flex items-center gap-1">
+              {NAV_LINKS.map(({ to, label, icon: Icon }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  className={({ isActive }) =>
+                    `relative px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-300
+                     ${
+                       isActive
+                         ? "bg-white/15 text-white border border-white/25 shadow-[inset_0_1px_0_rgba(255,255,255,0.3),0_10px_24px_-12px_rgba(0,0,0,0.65)]"
+                         : "text-white/65 hover:text-white hover:bg-white/10 border border-transparent"
+                     }`
+                  }
+                >
+                  <span className="inline-flex items-center gap-1.5">
+                    <Icon className="h-3.5 w-3.5" />
+                    {label}
+                  </span>
+                </NavLink>
+              ))}
+            </nav>
+
+            <div className="hidden md:flex items-center gap-2.5">
+              <div className="flex items-center gap-2 rounded-full glass-subtle pl-1 pr-3 py-1">
+                {user?.avatar_url ? (
+                  <img
+                    src={user.avatar_url}
+                    alt={user.display_name}
+                    className="h-7 w-7 rounded-full object-cover ring-1 ring-white/25"
+                  />
+                ) : (
+                  <div className="h-7 w-7 rounded-full bg-gradient-to-br from-violet-400/70 to-sky-400/70 ring-1 ring-white/25 flex items-center justify-center text-xs font-bold text-white">
+                    {user?.display_name?.[0]?.toUpperCase()}
+                  </div>
+                )}
+                <span className="text-xs text-white/75 font-medium max-w-[110px] truncate">
+                  {user?.display_name}
+                </span>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="btn-secondary !px-3.5 !py-2 !text-xs"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+                Logout
+              </button>
+            </div>
+
+            <button
+              className="md:hidden glass-icon h-10 w-10 rounded-xl text-white transition-colors hover:bg-white/10"
+              onClick={() => setMobileOpen((v) => !v)}
+              aria-label="Toggle menu"
             >
-              <Icon className="h-3.5 w-3.5" />
-              {label}
-            </NavLink>
-          ))}
+              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
         </nav>
 
-        {/* Desktop Right */}
-        <div className="hidden md:flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            {user?.avatar_url ? (
-              <img
-                src={user.avatar_url}
-                alt={user.display_name}
-                className="h-7 w-7 rounded-full object-cover ring-1 ring-white/10"
-              />
-            ) : (
-              <div className="h-7 w-7 rounded-full bg-indigo-500/20 ring-1 ring-indigo-500/30 flex items-center justify-center text-xs font-bold text-indigo-400">
-                {user?.display_name?.[0]?.toUpperCase()}
-              </div>
-            )}
-            <span className="text-sm text-slate-400 font-medium">{user?.display_name}</span>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="btn-secondary !px-3 !py-1.5 !text-xs"
-          >
-            <LogOut className="h-3.5 w-3.5" />
-            Logout
-          </button>
-        </div>
-
-        {/* Mobile Hamburger */}
-        <button
-          className="md:hidden p-2 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-colors"
-          onClick={() => setMobileOpen((v) => !v)}
-          aria-label="Toggle menu"
-        >
-          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      {mobileOpen && (
-        <div className="md:hidden border-t border-white/8 px-4 py-3 space-y-1 animate-fade-in">
-          {NAV_LINKS.map(({ to, label, icon: Icon }) => (
-            <NavLink
-              key={to}
-              to={to}
-              onClick={() => setMobileOpen(false)}
-              className={({ isActive }) =>
-                `flex items-center gap-2 w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-all
-                 ${isActive
-                   ? "bg-indigo-500/15 text-indigo-300"
-                   : "text-slate-400 hover:text-white hover:bg-white/5"
-                 }`
-              }
-            >
-              <Icon className="h-4 w-4" />
-              {label}
-            </NavLink>
-          ))}
-          <div className="pt-2 border-t border-white/8 mt-2">
+        {mobileOpen && (
+          <div className="md:hidden relative z-10 mx-3 mt-2 space-y-1.5 rounded-2xl glass p-3 anim-stagger">
+            {NAV_LINKS.map(({ to, label, icon: Icon }) => (
+              <NavLink
+                key={to}
+                to={to}
+                onClick={() => setMobileOpen(false)}
+                className={({ isActive }) =>
+                  `flex items-center gap-2 w-full px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
+                    isActive
+                      ? "bg-white/15 text-white border border-white/25"
+                      : "text-white/70 hover:text-white hover:bg-white/10 border border-transparent"
+                  }`
+                }
+              >
+                <Icon className="h-4 w-4" />
+                {label}
+              </NavLink>
+            ))}
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors"
+              className="btn-secondary w-full !py-3 !text-sm mt-1"
             >
               <LogOut className="h-4 w-4" />
               Logout
             </button>
           </div>
-        </div>
-      )}
-    </header>
-  );
-}
+        )}
 
-function ProtectedLayout() {
-  return (
-    <div className="min-h-screen">
-      <NavBar />
-      <main>
-        <Outlet />
-      </main>
+        <main className="relative z-10 flex-1 overflow-y-auto px-4 md:px-6 pb-8 md:pb-10">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 }
@@ -154,65 +180,72 @@ export default function App() {
 
   return (
     <>
-      <BackgroundVideo />
+      <IntroSplash />
       <Toaster
         position="top-right"
         toastOptions={{
           style: {
-            background: "rgba(15, 23, 42, 0.72)",
-            color: "#f1f5f9",
-            border: "1px solid rgba(255,255,255,0.15)",
-            borderRadius: "12px",
+            background: "rgba(255, 255, 255, 0.08)",
+            color: "#f8fafc",
+            border: "1px solid rgba(255,255,255,0.18)",
+            borderRadius: "14px",
             fontSize: "14px",
-            fontFamily: "Inter, sans-serif",
-            backdropFilter: "blur(18px) saturate(160%)",
+            fontFamily: "Plus Jakarta Sans, sans-serif",
+            backdropFilter: "blur(20px) saturate(180%)",
+            boxShadow: "0 24px 60px -18px rgba(2,6,23,0.75), inset 0 1px 0 rgba(255,255,255,0.22)",
           },
           success: {
-            iconTheme: { primary: "#818cf8", secondary: "#1e293b" },
+            iconTheme: { primary: "#c4b5fd", secondary: "#1e1b4b" },
           },
           error: {
-            iconTheme: { primary: "#f87171", secondary: "#1e293b" },
+            iconTheme: { primary: "#fda4af", secondary: "#4c0519" },
           },
         }}
       />
 
-      <div className="relative z-10">
-        {isLoading ? (
-          <div className="min-h-screen flex items-center justify-center">
-            <div className="glass rounded-3xl px-8 py-7 flex flex-col items-center gap-4">
-              <div className="h-10 w-10 rounded-2xl bg-indigo-500/20 flex items-center justify-center ring-1 ring-indigo-500/30">
-                <MapPinned className="h-5 w-5 text-indigo-400 animate-pulse" />
+      {isLoading ? (
+        <>
+          <BackgroundVideo />
+          <AuroraBackground className="fixed inset-0 z-0" />
+          <div className="relative z-10 min-h-screen flex items-center justify-center px-4">
+            <div className="glass-strong rounded-3xl px-10 py-9 flex flex-col items-center gap-5">
+              <div className="glass-icon h-12 w-12 rounded-2xl">
+                <MapPinned className="h-5 w-5 text-violet-300 animate-pulse" />
               </div>
-              <div className="flex gap-1">
+              <p className="text-xs font-medium tracking-[0.28em] uppercase text-white/50">
+                Loading your space
+              </p>
+              <div className="flex gap-1.5">
                 {[0, 1, 2].map((i) => (
                   <div
                     key={i}
-                    className="h-1.5 w-1.5 rounded-full bg-indigo-500 animate-bounce"
+                    className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-violet-400 to-sky-400 animate-bounce"
                     style={{ animationDelay: `${i * 0.15}s` }}
                   />
                 ))}
               </div>
             </div>
           </div>
-        ) : (
-          <Routes>
+        </>
+      ) : (
+        <Routes>
+          <Route element={<PublicLayout />}>
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
-
-            <Route element={<ProtectedRoute />}>
-              <Route element={<ProtectedLayout />}>
-                <Route path="/app" element={<AppPage />} />
-                <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/history" element={<HistoryPage />} />
-                <Route path="/profile" element={<ProfilePage />} />
-              </Route>
-            </Route>
-
             <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        )}
-      </div>
+          </Route>
+
+          <Route element={<ProtectedRoute />}>
+            <Route element={<VortxLayout />}>
+              <Route path="/app" element={<AppPage />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/history" element={<HistoryPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
+            </Route>
+          </Route>
+        </Routes>
+      )}
     </>
   );
 }

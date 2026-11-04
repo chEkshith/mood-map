@@ -23,7 +23,7 @@ export function PlaceCardList() {
   if (apiStatus === "error") {
     return (
       <div className="card p-5 text-center">
-        <p className="text-sm text-red-400">Failed to load results. Please try again.</p>
+        <p className="text-sm text-rose-300">Failed to load results. Please try again.</p>
       </div>
     );
   }
@@ -31,9 +31,9 @@ export function PlaceCardList() {
   if (places.length === 0 && apiStatus === "success") {
     return (
       <div className="card p-8 text-center">
-        <MapPin className="h-8 w-8 text-slate-600 mx-auto mb-3" />
-        <p className="text-sm text-slate-400">No places found nearby for your mood.</p>
-        <p className="text-xs text-slate-600 mt-1">Try increasing the search radius.</p>
+        <MapPin className="h-8 w-8 text-white/25 mx-auto mb-3" />
+        <p className="text-sm text-white/55">No places found nearby for your mood.</p>
+        <p className="text-xs text-white/30 mt-1">Try increasing the search radius.</p>
       </div>
     );
   }
@@ -43,10 +43,10 @@ export function PlaceCardList() {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-widest">
+        <h3 className="text-[10px] font-semibold text-white/45 uppercase tracking-[0.22em]">
           Nearby places
         </h3>
-        <span className="text-xs text-slate-600">{places.length} found</span>
+        <span className="text-[11px] text-white/30">{places.length} found</span>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-3">
         {places.map((place) => (

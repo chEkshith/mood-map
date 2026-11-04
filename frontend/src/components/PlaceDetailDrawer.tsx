@@ -30,16 +30,16 @@ export function PlaceDetailDrawer() {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 animate-fade-in"
+        className="fixed inset-0 bg-black/45 backdrop-blur-md z-40 animate-fade-in"
         onClick={() => selectPlace(null)}
       />
 
       {/* Drawer */}
       <div className="fixed bottom-0 left-0 right-0 z-50 md:right-auto md:left-auto md:top-0 md:bottom-0 md:right-0 md:w-96 animate-slide-up md:animate-none">
-        <div className="glass rounded-t-2xl md:rounded-none md:rounded-l-2xl md:h-full h-auto max-h-[85vh] overflow-y-auto border-t border-l border-white/10 shadow-2xl">
+        <div className="glass-strong rounded-t-[1.75rem] md:rounded-none md:rounded-l-[1.75rem] md:h-full h-auto max-h-[85vh] overflow-y-auto border-t border-l border-white/20 shadow-2xl">
 
           {/* Photo */}
-          <div className="h-48 bg-white/5 relative shrink-0">
+          <div className="h-48 bg-white/5 relative shrink-0 overflow-hidden">
             {selectedPlace.photo_url ? (
               <img
                 src={selectedPlace.photo_url}
@@ -47,15 +47,16 @@ export function PlaceDetailDrawer() {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <MapPin className="h-10 w-10 text-slate-600" />
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-white/10 to-white/[0.02]">
+                <MapPin className="h-10 w-10 text-white/25" />
               </div>
             )}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
             <button
               onClick={() => selectPlace(null)}
               aria-label="Close drawer"
-              className="absolute top-3 right-3 h-8 w-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center
-                         text-white hover:bg-black/70 transition-colors"
+              className="absolute top-3 right-3 h-8 w-8 rounded-full glass-subtle flex items-center justify-center
+                         text-white hover:bg-white/20 transition-colors"
             >
               <X className="h-4 w-4" />
             </button>
@@ -64,50 +65,51 @@ export function PlaceDetailDrawer() {
           {/* Content */}
           <div className="p-5 space-y-4">
             <div>
-              <h2 className="text-lg font-bold text-white mb-0.5">{selectedPlace.name}</h2>
-              <p className="text-xs text-slate-500 capitalize">{firstType}</p>
+              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">Place details</span>
+              <h2 className="text-xl font-semibold font-display text-white mb-0.5 tracking-tight">{selectedPlace.name}</h2>
+              <p className="text-xs text-white/40 capitalize">{firstType}</p>
             </div>
 
             {/* Stats row */}
             <div className="flex items-center gap-4">
               {selectedPlace.rating !== null && (
                 <div className="flex items-center gap-1.5">
-                  <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                  <span className="text-sm font-semibold text-slate-200">
+                  <Star className="h-4 w-4 fill-amber-300 text-amber-300" />
+                  <span className="text-sm font-semibold text-white/90">
                     {selectedPlace.rating.toFixed(1)}
                   </span>
-                  <span className="text-xs text-slate-500">rating</span>
+                  <span className="text-xs text-white/40">rating</span>
                 </div>
               )}
               <div className="flex items-center gap-1.5">
-                <Navigation className="h-4 w-4 text-indigo-400" />
-                <span className="text-sm text-slate-300">{formatDistance(selectedPlace.distance_meters)}</span>
+                <Navigation className="h-4 w-4 text-violet-300" />
+                <span className="text-sm text-white/70">{formatDistance(selectedPlace.distance_meters)}</span>
               </div>
             </div>
 
             {/* Address */}
             <div className="flex items-start gap-2">
-              <MapPin className="h-4 w-4 text-slate-500 shrink-0 mt-0.5" />
-              <p className="text-sm text-slate-400 leading-relaxed">{selectedPlace.address}</p>
+              <MapPin className="h-4 w-4 text-white/40 shrink-0 mt-0.5" />
+              <p className="text-sm text-white/55 leading-relaxed">{selectedPlace.address}</p>
             </div>
 
             {/* Why suggested */}
             {selectedPlace.why_suggested && (
-              <div className="card p-3 bg-indigo-500/8 border-indigo-500/15">
-                <p className="text-xs font-medium text-indigo-300 mb-1">Why this place?</p>
-                <p className="text-xs text-slate-400 leading-relaxed">{selectedPlace.why_suggested}</p>
+              <div className="rounded-2xl bg-violet-400/10 border border-violet-300/20 p-3.5 backdrop-blur-md">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-violet-200 mb-1">Why this place?</p>
+                <p className="text-xs text-white/55 leading-relaxed">{selectedPlace.why_suggested}</p>
               </div>
             )}
 
             {/* Place types */}
             {selectedPlace.place_types.length > 0 && (
               <div>
-                <p className="text-xs font-medium text-slate-500 mb-2">Categories</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40 mb-2">Categories</p>
                 <div className="flex flex-wrap gap-1.5">
                   {selectedPlace.place_types.slice(0, 5).map((type) => (
                     <span
                       key={type}
-                      className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-xs text-slate-400 capitalize"
+                      className="px-2.5 py-0.5 rounded-full glass-subtle text-[11px] text-white/55 capitalize"
                     >
                       {type.replace(/_/g, " ")}
                     </span>

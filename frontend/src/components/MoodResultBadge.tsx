@@ -31,44 +31,44 @@ export function MoodResultBadge({ mood, whySuggested }: Props) {
 
   return (
     <div
-      className={`card p-5 bg-gradient-to-br ${config.bg} animate-scale-in`}
-      style={{ boxShadow: `0 4px 24px ${config.glow}, 0 0 0 1px rgba(255,255,255,0.06) inset` }}
+      className={`card p-5 bg-gradient-to-br ${config.bg} animate-scale-in overflow-hidden`}
+      style={{ boxShadow: `0 24px 60px -24px ${config.glow}, 0 0 0 1px rgba(255,255,255,0.08) inset, inset 0 1px 0 rgba(255,255,255,0.22)` }}
     >
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
-          <span className="text-4xl">{config.emoji}</span>
+          <span className="text-4xl drop-shadow-[0_4px_16px_rgba(0,0,0,0.4)]">{config.emoji}</span>
           <div>
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-widest mb-0.5">Detected mood</p>
-            <h3 className={`text-lg font-bold ${config.color}`}>{config.label}</h3>
+            <p className="text-[10px] font-semibold text-white/40 uppercase tracking-[0.2em] mb-0.5">Detected mood</p>
+            <h3 className={`text-lg font-semibold font-display tracking-tight ${config.color}`}>{config.label}</h3>
           </div>
         </div>
 
         <div className="text-right">
-          <p className="text-xs text-slate-500 mb-0.5">Confidence</p>
-          <p className={`text-sm font-bold ${config.color}`}>{confidencePct}%</p>
+          <p className="text-[10px] text-white/40 uppercase tracking-[0.16em] mb-0.5">Confidence</p>
+          <p className={`text-sm font-semibold ${config.color}`}>{confidencePct}%</p>
         </div>
       </div>
 
       {/* Confidence bar */}
-      <div className="h-1 w-full bg-white/5 rounded-full mb-4 overflow-hidden">
+      <div className="h-1.5 w-full bg-white/10 rounded-full mb-4 overflow-hidden">
         <div
           className={`h-full rounded-full transition-all duration-700 ease-out ${config.color.replace("text-", "bg-")}`}
-          style={{ width: `${confidencePct}%` }}
+          style={{ width: `${confidencePct}%`, boxShadow: `0 0 14px ${config.glow}` }}
         />
       </div>
 
       <div className="flex items-center gap-2 flex-wrap">
         <div className="flex items-center gap-1.5">
-          <Sparkles className="h-3.5 w-3.5 text-indigo-400" />
-          <span className="text-xs text-slate-400 font-medium">Strategy:</span>
+          <Sparkles className="h-3.5 w-3.5 text-violet-300" />
+          <span className="text-[11px] text-white/45 font-medium">Strategy:</span>
         </div>
-        <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border ${strategy.bg} ${strategy.color}`}>
+        <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold border backdrop-blur-md ${strategy.bg} ${strategy.color}`}>
           {strategy.label}
         </span>
       </div>
 
       {whySuggested && (
-        <p className="text-xs text-slate-500 mt-2 leading-relaxed border-t border-white/5 pt-2">
+        <p className="text-[11px] text-white/40 mt-2 leading-relaxed border-t border-white/10 pt-2">
           {whySuggested}
         </p>
       )}
