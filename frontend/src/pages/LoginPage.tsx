@@ -1,4 +1,4 @@
-import { Eye, EyeOff, Loader2, MapPinned } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Loader2, MapPinned } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
@@ -31,6 +31,12 @@ export function LoginPage() {
 
   return (
     <div className="min-h-screen flex">
+      {/* Dark overlay to improve content contrast over the background video */}
+      <div
+        className="pointer-events-none fixed inset-0 -z-10 bg-black/70"
+        aria-hidden="true"
+      />
+
       {/* Left decorative panel */}
       <div className="hidden lg:flex flex-col justify-between w-1/2 p-4">
         <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-[1.75rem] glass-strong p-11">
@@ -42,12 +48,12 @@ export function LoginPage() {
             }}
           />
 
-          <div className="relative flex items-center gap-3">
+          <Link to="/" className="relative flex items-center gap-3 w-fit">
             <div className="glass-icon h-10 w-10 rounded-xl">
               <MapPinned className="h-4 w-4 text-violet-200" />
             </div>
             <span className="font-brand font-semibold text-white tracking-tight">MoodMap</span>
-          </div>
+          </Link>
 
           <div className="relative">
             <span className="glass-chip px-3.5 py-1.5 text-[10px] uppercase tracking-[0.3em] text-violet-100/70 mb-6">
@@ -72,7 +78,15 @@ export function LoginPage() {
       </div>
 
       {/* Right: Login form */}
-      <div className="flex-1 flex flex-col items-center justify-center p-5 lg:p-12">
+      <div className="relative flex-1 flex flex-col items-center justify-center p-5 lg:p-12">
+        <Link
+          to="/"
+          className="absolute top-5 left-5 lg:top-7 lg:left-8 inline-flex items-center gap-1.5 text-xs font-medium text-white/50 hover:text-white transition-colors"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" />
+          Back to home
+        </Link>
+
         {/* Mobile logo */}
         <Link to="/" className="flex items-center gap-2.5 mb-8 lg:hidden">
           <div className="glass-icon h-9 w-9 rounded-xl">
