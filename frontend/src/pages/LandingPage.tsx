@@ -1,269 +1,307 @@
-import { ArrowRight, BarChart2, Clock, MapPinned, Sparkles, Star, Zap } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  BarChart2,
+  Clock,
+  Coffee,
+  MapPinned,
+  Sparkles,
+  Trees,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
 const FEATURES = [
   {
     icon: Sparkles,
-    title: "AI Mood Classification",
+    title: "Mood check-ins",
     description:
-      "Just describe how you feel in plain words. Our LLaMA3-powered AI instantly reads your emotional state with nuance.",
-    color: "text-violet-300",
-    bg: "from-violet-500/25 to-fuchsia-500/10",
-    border: "border-violet-400/20",
-    glow: "group-hover:shadow-[0_24px_70px_-24px_rgba(139,92,246,0.65)]",
+      "Write a sentence or two. MoodMap reads the tone and picks a direction without a long questionnaire.",
   },
   {
     icon: MapPinned,
-    title: "Location-Aware Suggestions",
+    title: "Places near you",
     description:
-      "MoodMap matches your mood to nearby places — cafés, parks, gyms, bookshops — using Google Places in real-time.",
-    color: "text-sky-300",
-    bg: "from-sky-500/25 to-blue-500/10",
-    border: "border-sky-400/20",
-    glow: "group-hover:shadow-[0_24px_70px_-24px_rgba(56,189,248,0.65)]",
+      "Suggestions come from Google Places and are filtered by distance, opening hours, and whether they fit the mood.",
   },
   {
     icon: BarChart2,
-    title: "Mood Analytics",
+    title: "Patterns over time",
     description:
-      "Track your emotional patterns over time with beautiful charts. Understand your mood cycles and streaks.",
-    color: "text-emerald-300",
-    bg: "from-emerald-500/25 to-teal-500/10",
-    border: "border-emerald-400/20",
-    glow: "group-hover:shadow-[0_24px_70px_-24px_rgba(16,185,129,0.6)]",
+      "A quiet record of how your moods move week to week, so patterns are easier to notice.",
   },
   {
     icon: Clock,
-    title: "Full Mood History",
+    title: "History you can revisit",
     description:
-      "Every session is logged. Filter by mood, revisit past entries, and see how your emotional landscape evolves.",
-    color: "text-amber-300",
-    bg: "from-amber-500/25 to-orange-500/10",
-    border: "border-amber-400/20",
-    glow: "group-hover:shadow-[0_24px_70px_-24px_rgba(245,158,11,0.6)]",
+      "Every check-in is saved. Look back at what helped, what didn't, and where you were.",
   },
 ];
 
 const MOODS = [
-  { emoji: "😖", label: "Stressed", strategy: "Reset", color: "from-rose-500/20 to-orange-500/5 border-rose-400/20" },
-  { emoji: "😰", label: "Anxious", strategy: "Shift", color: "from-amber-500/20 to-yellow-500/5 border-amber-400/20" },
-  { emoji: "😐", label: "Bored", strategy: "Match", color: "from-sky-500/20 to-cyan-500/5 border-sky-400/20" },
-  { emoji: "🥱", label: "Exhausted", strategy: "Reset", color: "from-violet-500/20 to-purple-500/5 border-violet-400/20" },
-  { emoji: "😄", label: "Happy", strategy: "Match", color: "from-emerald-500/20 to-green-500/5 border-emerald-400/20" },
-  { emoji: "😔", label: "Melancholic", strategy: "Shift", color: "from-indigo-500/20 to-blue-500/5 border-indigo-400/20" },
+  { label: "Stressed", strategy: "Reset" },
+  { label: "Anxious", strategy: "Shift" },
+  { label: "Bored", strategy: "Match" },
+  { label: "Exhausted", strategy: "Reset" },
+  { label: "Happy", strategy: "Match" },
+  { label: "Melancholic", strategy: "Shift" },
 ];
 
 const STEPS = [
-  { num: "01", title: "Sign up free", desc: "Create your account in seconds — no credit card needed." },
-  { num: "02", title: "Describe your mood", desc: "Type how you're feeling in natural language, as little or as much as you like." },
-  { num: "03", title: "Allow location", desc: "MoodMap reads your GPS to find places near you right now." },
-  { num: "04", title: "Explore your map", desc: "See curated nearby places on an interactive map, tailored to your emotional state." },
+  {
+    title: "Create an account",
+    desc: "An email and password is all it takes. No card, no setup wizard.",
+  },
+  {
+    title: "Write how you feel",
+    desc: "A sentence is enough. You don't need the perfect words.",
+  },
+  {
+    title: "Share your location",
+    desc: "Used once per check-in to find places you can actually reach.",
+  },
+  {
+    title: "Pick a place and go",
+    desc: "Open it in Maps, save it, or ask for another suggestion.",
+  },
 ];
 
 export function LandingPage() {
   return (
     <div className="min-h-screen">
-      {/* Dark overlay to improve content contrast over the background video */}
       <div
-        className="pointer-events-none fixed inset-0 -z-10 bg-black/70"
+        className="pointer-events-none fixed inset-0 -z-10 bg-black/75"
         aria-hidden="true"
       />
 
-      {/* Nav */}
-      <header className="sticky top-0 z-40 px-3 pt-3 md:pt-4">
-        <div className="max-w-6xl mx-auto glass rounded-2xl px-4 md:px-5 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="glass-icon h-9 w-9 rounded-xl">
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#05060f]/70 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between pl-4 pr-2 md:pl-6 md:pr-0">
+          <Link to="/" className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/15 bg-white/[0.05]">
               <MapPinned className="h-4 w-4 text-violet-200" />
             </div>
-            <span className="font-brand font-semibold text-white tracking-tight text-[17px]">
-              Mood<span className="text-gradient-brand">Map</span>
+            <span className="font-brand text-[17px] font-semibold tracking-tight text-white">
+              MoodMap
             </span>
-          </div>
-          <div className="flex items-center gap-2 md:gap-3">
-            <Link to="/login" className="btn-secondary !py-2 !px-4 !text-sm">
+          </Link>
+          <div className="flex items-center gap-3 md:gap-5">
+            <Link
+              to="/login"
+              className="text-sm font-medium text-white/55 transition-colors hover:text-white"
+            >
               Log in
             </Link>
-            <Link to="/signup" className="btn-primary !py-2 !px-4 !text-sm">
-              Get started <ArrowRight className="h-3.5 w-3.5" />
+            <Link to="/signup" className="btn-primary !px-4 !py-2 !text-sm">
+              Get started
             </Link>
           </div>
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="relative overflow-hidden py-24 md:py-32 px-4">
-        <div className="max-w-4xl mx-auto text-center relative">
-          <div className="glass-chip px-4 py-2 text-violet-100/90 text-xs font-medium mb-7 animate-fade-in font-accent tracking-[0.18em] uppercase">
-            <Zap className="h-3 w-3 text-violet-300" />
-            AI-Powered Emotional Wellness
-          </div>
-
-          <h1 className="font-display text-[2.75rem] leading-[1.02] sm:text-6xl md:text-7xl lg:text-[5.25rem] font-semibold text-white mb-6 animate-slide-up tracking-[-0.045em] text-neon">
-            Your mood.
-            <br />
-            <span className="text-gradient italic">Your perfect place.</span>
-          </h1>
-
-          <p className="font-accent text-lg md:text-xl text-slate-300/80 max-w-2xl mx-auto mb-10 leading-relaxed animate-slide-up" style={{ animationDelay: "0.1s" }}>
-            Describe how you feel, and MoodMap finds nearby places suited to help you
-            reset, shift, or match your current emotional state.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 animate-slide-up" style={{ animationDelay: "0.2s" }}>
-            <Link to="/signup" className="btn-primary !px-8 !py-3.5 !text-base w-full sm:w-auto">
-              Start for free <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link to="/login" className="btn-secondary !px-8 !py-3.5 !text-base w-full sm:w-auto">
-              Sign in to your account
-            </Link>
-          </div>
-
-          {/* Social proof */}
-          <div className="mt-12 inline-flex items-center gap-3 glass-subtle rounded-full px-4 py-2 text-slate-400 text-sm animate-fade-in" style={{ animationDelay: "0.4s" }}>
-            <div className="flex -space-x-2">
-              {["V", "A", "R", "S"].map((letter) => (
-                <div key={letter} className="h-7 w-7 rounded-full bg-gradient-to-br from-violet-400/70 to-sky-400/70 ring-2 ring-[#080a18] flex items-center justify-center text-[10px] font-bold text-white">
-                  {letter}
-                </div>
-              ))}
-            </div>
-            <div className="flex items-center gap-0.5">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="h-3 w-3 fill-amber-300 text-amber-300" />
-              ))}
-            </div>
-            <span className="text-xs text-white/60">Loved by wellness seekers</span>
-          </div>
-        </div>
-      </section>
-
-      {/* Mood Chips */}
-      <section className="py-12 px-4 overflow-hidden">
-        <div className="max-w-5xl mx-auto">
-          <p className="text-center text-white/40 text-xs font-semibold mb-6 uppercase tracking-[0.3em]">
-            We understand every mood
-          </p>
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-            {MOODS.map(({ emoji, label, strategy, color }) => (
-              <div
-                key={label}
-                className={`card group flex flex-col items-center gap-2 p-4 bg-gradient-to-b ${color} transition-all duration-300 hover:-translate-y-1.5 hover:border-white/30`}
+      <section className="px-4 pb-20 pt-16 md:px-6 md:pb-28 md:pt-24">
+        <div className="mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
+          <div>
+            <p className="mb-6 flex items-center gap-3 text-sm text-white/45">
+              <span className="h-px w-8 bg-white/25" />
+              A calmer way to choose where to go
+            </p>
+            <h1 className="font-display text-5xl font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-6xl lg:text-[4.6rem]">
+              Where you go can change how you feel.
+            </h1>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-300/75">
+              Tell MoodMap how you're feeling. It suggests nearby places that fit the
+              moment — somewhere to reset, shift, or lean into it.
+            </p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Link to="/signup" className="btn-primary !px-6 !py-3 !text-base">
+                Try MoodMap <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                to="/login"
+                className="inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-medium text-white/55 transition-colors hover:text-white"
               >
-                <span className="text-3xl transition-transform duration-300 group-hover:scale-110">{emoji}</span>
-                <span className="text-xs font-semibold text-slate-100">{label}</span>
-                <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wide backdrop-blur-md
-                  ${strategy === "Reset" ? "bg-blue-400/15 text-blue-200" :
-                    strategy === "Shift" ? "bg-amber-400/15 text-amber-200" :
-                    "bg-emerald-400/15 text-emerald-200"}`}>
-                  {strategy}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
-            <span className="glass-chip px-4 py-1.5 text-[10px] uppercase tracking-[0.3em] text-white/50 mb-5">
-              Capabilities
-            </span>
-            <h2 className="font-display text-3xl md:text-5xl font-semibold text-white mb-4 tracking-tight text-neon">
-              Everything you need to
-              <span className="text-gradient"> feel better</span>
-            </h2>
-            <p className="font-accent text-base md:text-lg text-slate-400/90 max-w-xl mx-auto leading-relaxed">
-              MoodMap combines AI, real-time location, and wellness science to guide you to the right place at the right moment.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {FEATURES.map(({ icon: Icon, title, description, color, bg, border, glow }) => (
-              <div key={title} className={`card group p-6 md:p-7 border ${border} transition-all duration-300 hover:-translate-y-1.5 ${glow}`}>
-                <div className={`glass-icon h-12 w-12 mb-5 bg-gradient-to-br ${bg}`}>
-                  <Icon className={`h-5 w-5 ${color}`} />
-                </div>
-                <h3 className="text-lg font-semibold text-white mb-2 tracking-tight text-neon">{title}</h3>
-                <p className="text-sm text-slate-400/90 leading-relaxed">{description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section className="py-20 px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-14">
-            <span className="glass-chip px-4 py-1.5 text-[10px] uppercase tracking-[0.3em] text-white/50 mb-5">
-              The flow
-            </span>
-            <h2 className="font-display text-3xl md:text-5xl font-semibold text-white mb-4 tracking-tight text-neon">
-              How it works
-            </h2>
-            <p className="font-accent text-base md:text-lg text-slate-400/90">
-              From feeling to finding — in under 30 seconds.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {STEPS.map(({ num, title, desc }) => (
-              <div key={num} className="card group p-6 flex gap-4 transition-all duration-300 hover:-translate-y-1 hover:border-white/30">
-                <span className="text-2xl font-bold font-display text-gradient shrink-0">{num}</span>
-                <div>
-                  <h3 className="font-semibold text-white mb-1 tracking-tight text-neon">{title}</h3>
-                  <p className="text-sm text-slate-400/90 leading-relaxed">{desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-24 px-4">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="glass-strong relative overflow-hidden rounded-3xl p-10 md:p-14 glow-indigo">
-            <div
-              className="pointer-events-none absolute inset-0 opacity-70"
-              style={{
-                background:
-                  "radial-gradient(ellipse 80% 80% at 50% 0%, rgba(139,92,246,0.35), transparent 65%), radial-gradient(ellipse 70% 60% at 80% 100%, rgba(56,189,248,0.22), transparent 60%)",
-              }}
-            />
-            <div className="relative">
-              <div className="glass-icon h-14 w-14 mx-auto mb-6">
-                <MapPinned className="h-6 w-6 text-violet-200" />
-              </div>
-              <h2 className="font-display text-3xl md:text-4xl font-semibold text-white mb-3 tracking-tight text-neon">
-                Ready to find your place?
-              </h2>
-              <p className="font-accent text-base md:text-lg text-slate-300/80 mb-8 max-w-md mx-auto">
-                It's free to start. No credit card, no commitment — just better days ahead.
-              </p>
-              <Link to="/signup" className="btn-primary !px-9 !py-3.5 !text-base">
-                Create your free account <ArrowRight className="h-4 w-4" />
+                I already have an account
               </Link>
             </div>
+            <p className="mt-4 text-xs text-white/35">
+              Free to use. No card required.
+            </p>
+          </div>
+
+          <div className="relative mx-auto w-full max-w-md">
+            <div className="absolute -inset-4 -z-10 rounded-[2rem] bg-violet-500/5 blur-2xl" aria-hidden="true" />
+            <div className="rounded-2xl border border-white/10 bg-[#0a0b16]/85 p-5 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.9)] backdrop-blur-xl">
+              <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                <span className="text-[11px] uppercase tracking-[0.18em] text-white/30">
+                  Today · 4:12 pm
+                </span>
+                <span className="flex items-center gap-1.5 text-[11px] text-emerald-300/80">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                  Nearby
+                </span>
+              </div>
+
+              <div className="py-5">
+                <p className="text-[11px] uppercase tracking-[0.18em] text-white/30">
+                  You wrote
+                </p>
+                <p className="mt-2 font-display text-xl leading-snug text-white">
+                  "I'm wound up and need somewhere quiet."
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-400/10 text-emerald-300">
+                    <Trees className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium text-white">The Quiet Garden</p>
+                    <p className="mt-0.5 text-xs text-white/45">
+                      Green space · 7 min walk · Usually calm
+                    </p>
+                  </div>
+                  <ArrowUpRight className="h-4 w-4 shrink-0 text-white/25" />
+                </div>
+                <div className="mt-3 flex items-center justify-between border-t border-white/10 pt-3 text-xs">
+                  <span className="text-white/40">
+                    Matched to <span className="text-white/70">Stressed</span>
+                  </span>
+                  <span className="text-violet-300/80">Reset</span>
+                </div>
+              </div>
+
+              <div className="mt-3 flex items-center justify-between rounded-xl border border-white/10 px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-400/10 text-sky-300">
+                    <Coffee className="h-3.5 w-3.5" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-white">Corner Café</p>
+                    <p className="text-xs text-white/40">10 min walk · Quiet at this hour</p>
+                  </div>
+                </div>
+                <ArrowUpRight className="h-4 w-4 text-white/25" />
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-white/10 py-8 px-4">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-white/40">
+      <section className="border-t border-white/10 px-4 py-14 md:px-6 md:py-16">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <h2 className="max-w-md font-display text-2xl font-semibold tracking-tight text-white md:text-3xl">
+              Not every feeling needs the same place.
+            </h2>
+            <p className="max-w-sm text-sm leading-relaxed text-white/50">
+              MoodMap sorts how you feel into six moods and one of three directions:
+              reset, shift, or match.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 border-l border-t border-white/10 sm:grid-cols-3 lg:grid-cols-6">
+            {MOODS.map(({ label, strategy }) => (
+              <div key={label} className="border-b border-r border-white/10 px-4 py-5">
+                <p className="text-sm font-medium text-white/85">{label}</p>
+                <p className="mt-1 text-xs text-white/40">{strategy}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-white/10 px-4 py-20 md:px-6 md:py-24">
+        <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-[0.22em] text-white/35">
+              What it does
+            </p>
+            <h2 className="mt-4 max-w-sm font-display text-3xl font-semibold leading-tight tracking-tight text-white md:text-4xl">
+              Thoughtful tools, quietly useful.
+            </h2>
+            <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/50">
+              No lengthy questionnaire. No endless browsing. Just enough help to decide
+              where to go next.
+            </p>
+          </div>
+          <div className="border-t border-white/10">
+            {FEATURES.map(({ icon: Icon, title, description }) => (
+              <div
+                key={title}
+                className="grid gap-4 border-b border-white/10 py-6 sm:grid-cols-[2.5rem_1fr] sm:gap-5"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.03]">
+                  <Icon className="h-4 w-4 text-violet-200" />
+                </div>
+                <div>
+                  <h3 className="font-medium text-white">{title}</h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-white/45">
+                    {description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-white/10 px-4 py-20 md:px-6 md:py-24">
+        <div className="mx-auto max-w-4xl">
+          <div className="max-w-xl">
+            <p className="text-xs font-medium uppercase tracking-[0.22em] text-white/35">
+              How it works
+            </p>
+            <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight text-white md:text-4xl">
+              From a feeling to a place in four steps.
+            </h2>
+          </div>
+          <ol className="mt-10 border-t border-white/10">
+            {STEPS.map(({ title, desc }, i) => (
+              <li
+                key={title}
+                className="grid gap-3 border-b border-white/10 py-6 sm:grid-cols-[3rem_1fr_1.2fr] sm:items-baseline sm:gap-6"
+              >
+                <span className="text-xs tabular-nums text-white/30">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h3 className="font-medium text-white">{title}</h3>
+                <p className="text-sm leading-relaxed text-white/45">{desc}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="border-t border-white/10 px-4 py-16 md:px-6 md:py-20">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h2 className="font-display text-2xl font-semibold tracking-tight text-white md:text-3xl">
+              Start with how you feel.
+            </h2>
+            <p className="mt-2 text-sm text-white/50">MoodMap will take it from there.</p>
+          </div>
+          <Link
+            to="/signup"
+            className="btn-primary w-full !px-6 !py-3 !text-base sm:w-auto"
+          >
+            Create a free account <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </section>
+
+      <footer className="border-t border-white/10 px-4 py-8 md:px-6">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-sm text-white/35 md:flex-row">
           <div className="flex items-center gap-2.5">
-            <div className="glass-icon h-8 w-8 rounded-lg">
-              <MapPinned className="h-3.5 w-3.5 text-violet-200" />
-            </div>
+            <MapPinned className="h-4 w-4 text-violet-200/70" />
             <span className="font-brand font-medium text-white/60">MoodMap</span>
           </div>
-          <span>© {new Date().getFullYear()} MoodMap. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} MoodMap</span>
           <div className="flex gap-5">
-            <Link to="/login" className="hover:text-white transition-colors">Login</Link>
-            <Link to="/signup" className="hover:text-white transition-colors">Sign up</Link>
+            <Link to="/login" className="transition-colors hover:text-white">
+              Login
+            </Link>
+            <Link to="/signup" className="transition-colors hover:text-white">
+              Sign up
+            </Link>
           </div>
         </div>
       </footer>

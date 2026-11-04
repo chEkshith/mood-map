@@ -9,7 +9,7 @@ type AuthSidePanelProps = {
 
 export function AuthSidePanel({ accent = "violet", children }: AuthSidePanelProps) {
   return (
-    <div className="hidden lg:flex flex-col w-[47%] py-16 px-3">
+    <div className="hidden lg:flex flex-col w-[47%] py-16 pl-8 pr-3">
       <div className="auth-panel relative flex h-full flex-col justify-between overflow-hidden rounded-[1.75rem] glass-strong p-11">
         <div className="auth-panel__video-frame" aria-hidden="true">
           <video
