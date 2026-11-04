@@ -1,5 +1,6 @@
 import { MapPinned } from "lucide-react";
-import { Outlet, Route, Routes } from "react-router-dom";
+import { useLayoutEffect, useRef } from "react";
+import { Outlet, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import BackgroundVideo from "./BackgroundVideo";
 import { AppHeader } from "./components/AppHeader";
@@ -17,6 +18,16 @@ import { NotFoundPage } from "./pages/NotFoundPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { SignupPage } from "./pages/SignupPage";
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+
 function PublicLayout() {
   return (
     <>
@@ -30,6 +41,15 @@ function PublicLayout() {
 }
 
 function VortxLayout() {
+  const mainRef = useRef<HTMLElement>(null);
+  const { pathname } = useLocation();
+
+  useLayoutEffect(() => {
+    if (mainRef.current) {
+      mainRef.current.scrollTop = 0;
+    }
+  }, [pathname]);
+
   return (
     <div className="h-screen w-full bg-black p-3 md:p-4 font-inter">
       <div className="w-full h-full rounded-[1.75rem] flex flex-col overflow-hidden relative bg-black/40 ring-1 ring-white/10">
@@ -37,7 +57,10 @@ function VortxLayout() {
         <AuroraBackground className="absolute inset-0 z-0" />
         <AppHeader />
 
-        <main className="relative z-10 flex-1 overflow-y-auto px-4 md:px-6 pb-8 md:pb-10">
+        <main
+          ref={mainRef}
+          className="relative z-10 flex-1 overflow-y-auto px-4 md:px-6 pb-8 md:pb-10"
+        >
           <Outlet />
         </main>
       </div>
@@ -50,6 +73,7 @@ export default function App() {
 
   return (
     <>
+      <ScrollToTop />
       <IntroSplash />
       <Toaster
         position="top-right"
