@@ -3,6 +3,7 @@ import { useState, type FormEvent } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { authApi, getApiErrorMessage } from "../api/client";
+import { AuthSidePanel } from "../components/AuthSidePanel";
 import { useMoodStore } from "../store/moodStore";
 
 export function SignupPage() {
@@ -38,50 +39,39 @@ export function SignupPage() {
     <div className="min-h-screen flex">
       {/* Dark overlay to improve content contrast over the background video */}
       <div
-        className="pointer-events-none fixed inset-0 -z-10 bg-black/70"
+        className="pointer-events-none fixed inset-0 -z-10 bg-black/85"
         aria-hidden="true"
       />
 
       {/* Left decorative panel */}
-      <div className="hidden lg:flex flex-col w-1/2 p-4">
-        <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-[1.75rem] glass-strong p-11">
-          <div
-            className="pointer-events-none absolute inset-0 opacity-80"
-            style={{
-              background:
-                "radial-gradient(ellipse 90% 70% at 85% 0%, rgba(236,72,153,0.28), transparent 60%), radial-gradient(ellipse 80% 70% at 10% 100%, rgba(139,92,246,0.35), transparent 62%)",
-            }}
-          />
-
-          <Link to="/" className="relative flex items-center gap-3 w-fit">
-            <div className="glass-icon h-10 w-10 rounded-xl">
-              <MapPinned className="h-4 w-4 text-violet-200" />
-            </div>
-            <span className="font-brand font-semibold text-white tracking-tight">MoodMap</span>
-          </Link>
-
-          <div className="relative space-y-3.5">
-            <span className="glass-chip px-3.5 py-1.5 text-[10px] uppercase tracking-[0.3em] text-violet-100/70 mb-2">
-              Start your journey
+      <AuthSidePanel accent="pink">
+        <div className="space-y-3.5">
+          <span
+            className="glass-chip anim-stagger px-3.5 py-1.5 text-[10px] uppercase tracking-[0.3em] text-violet-100/70 mb-4"
+            style={{ animationDelay: "0.2s" }}
+          >
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-fuchsia-300 opacity-75" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-fuchsia-200" />
             </span>
-            {[
-              { emoji: "😖", text: "Stressed? Find a quiet park nearby." },
-              { emoji: "😰", text: "Anxious? Discover a calming café." },
-              { emoji: "😄", text: "Happy? Explore a lively space to match your vibe." },
-            ].map(({ emoji, text }) => (
-              <div
-                key={text}
-                className="flex items-center gap-3 rounded-2xl glass-subtle px-4 py-3.5 text-sm text-slate-200/90 transition-all duration-300 hover:bg-white/10 hover:border-white/25"
-              >
-                <span className="text-xl">{emoji}</span>
-                <span>{text}</span>
-              </div>
-            ))}
-          </div>
-
-          <p className="relative text-white/30 text-xs">© {new Date().getFullYear()} MoodMap</p>
+            Start your journey
+          </span>
+          {[
+            { emoji: "😖", text: "Stressed? Find a quiet park nearby." },
+            { emoji: "😰", text: "Anxious? Discover a calming café." },
+            { emoji: "😄", text: "Happy? Explore a lively space to match your vibe." },
+          ].map(({ emoji, text }, i) => (
+            <div
+              key={text}
+              className="anim-stagger flex items-center gap-3 rounded-2xl glass-subtle px-4 py-3.5 text-sm text-slate-200/90 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/10 hover:border-white/25"
+              style={{ animationDelay: `${0.3 + i * 0.12}s` }}
+            >
+              <span className="text-xl">{emoji}</span>
+              <span>{text}</span>
+            </div>
+          ))}
         </div>
-      </div>
+      </AuthSidePanel>
 
       {/* Right: Form */}
       <div className="relative flex-1 flex flex-col items-center justify-center p-5 lg:p-12">
@@ -124,7 +114,7 @@ export function SignupPage() {
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 placeholder="Your name"
-                className="input-field"
+                className="input-field-light"
               />
             </div>
 
@@ -140,7 +130,7 @@ export function SignupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="input-field"
+                className="input-field-light"
               />
             </div>
 
@@ -159,12 +149,12 @@ export function SignupPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="input-field pr-11"
+                  className="input-field-light pr-11"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-800 transition-colors"
                   aria-label="Toggle password visibility"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}

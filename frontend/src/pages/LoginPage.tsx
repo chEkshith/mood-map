@@ -3,6 +3,7 @@ import { useState, type FormEvent } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { authApi, getApiErrorMessage } from "../api/client";
+import { AuthSidePanel } from "../components/AuthSidePanel";
 import { useMoodStore } from "../store/moodStore";
 
 export function LoginPage() {
@@ -33,49 +34,60 @@ export function LoginPage() {
     <div className="min-h-screen flex">
       {/* Dark overlay to improve content contrast over the background video */}
       <div
-        className="pointer-events-none fixed inset-0 -z-10 bg-black/70"
+        className="pointer-events-none fixed inset-0 -z-10 bg-black/85"
         aria-hidden="true"
       />
 
       {/* Left decorative panel */}
-      <div className="hidden lg:flex flex-col justify-between w-1/2 p-4">
-        <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-[1.75rem] glass-strong p-11">
-          <div
-            className="pointer-events-none absolute inset-0 opacity-80"
-            style={{
-              background:
-                "radial-gradient(ellipse 90% 70% at 15% 0%, rgba(139,92,246,0.35), transparent 60%), radial-gradient(ellipse 70% 60% at 90% 90%, rgba(56,189,248,0.22), transparent 60%)",
-            }}
-          />
-
-          <Link to="/" className="relative flex items-center gap-3 w-fit">
-            <div className="glass-icon h-10 w-10 rounded-xl">
-              <MapPinned className="h-4 w-4 text-violet-200" />
-            </div>
-            <span className="font-brand font-semibold text-white tracking-tight">MoodMap</span>
-          </Link>
-
-          <div className="relative">
-            <span className="glass-chip px-3.5 py-1.5 text-[10px] uppercase tracking-[0.3em] text-violet-100/70 mb-6">
-              Emotional intelligence
+      <AuthSidePanel accent="violet">
+        <div className="relative">
+          <span
+            className="glass-chip anim-stagger px-3.5 py-1.5 text-[10px] uppercase tracking-[0.3em] text-violet-100/70 mb-6"
+            style={{ animationDelay: "0.2s" }}
+          >
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-violet-300 opacity-75" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-violet-200" />
             </span>
-            <blockquote className="font-display text-3xl font-medium text-white leading-[1.2] tracking-tight mb-6">
-              "The places around you can shift how you feel inside — you just need the right guide."
-            </blockquote>
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-violet-400/80 to-sky-400/80 flex items-center justify-center text-sm font-bold text-white ring-1 ring-white/25">
-                M
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-white">MoodMap</p>
-                <p className="text-xs text-white/40">AI Wellness Platform</p>
-              </div>
+            Emotional intelligence
+          </span>
+          <blockquote
+            className="anim-stagger font-display text-3xl font-medium text-white leading-[1.2] tracking-tight mb-6"
+            style={{ animationDelay: "0.3s" }}
+          >
+            "The places around you can shift how you feel inside — you just need the right guide."
+          </blockquote>
+          <div
+            className="anim-stagger flex items-center gap-3"
+            style={{ animationDelay: "0.4s" }}
+          >
+            <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-violet-400/80 to-sky-400/80 text-sm font-bold text-white ring-1 ring-white/25">
+              <span
+                className="absolute inset-0 animate-ping rounded-full border border-violet-300/40"
+                style={{ animationDuration: "2.6s" }}
+              />
+              M
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-white">MoodMap</p>
+              <p className="text-xs text-white/40">AI Wellness Platform</p>
             </div>
           </div>
-
-          <p className="relative text-white/30 text-xs">© {new Date().getFullYear()} MoodMap</p>
+          <div
+            className="anim-stagger mt-7 flex flex-wrap gap-2"
+            style={{ animationDelay: "0.5s" }}
+          >
+            {["Reset", "Shift", "Match"].map((label) => (
+              <span
+                key={label}
+                className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-medium text-white/70 backdrop-blur-md transition-colors duration-300 hover:border-violet-300/40 hover:text-white"
+              >
+                {label}
+              </span>
+            ))}
+          </div>
         </div>
-      </div>
+      </AuthSidePanel>
 
       {/* Right: Login form */}
       <div className="relative flex-1 flex flex-col items-center justify-center p-5 lg:p-12">
@@ -119,7 +131,7 @@ export function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="input-field"
+                className="input-field-light"
               />
             </div>
 
@@ -138,12 +150,12 @@ export function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="input-field pr-11"
+                  className="input-field-light pr-11"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-800 transition-colors"
                   aria-label="Toggle password visibility"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
