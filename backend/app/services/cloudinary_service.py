@@ -37,6 +37,20 @@ async def upload_avatar(file_bytes: bytes, user_id: str) -> str:
         raise
 
 
+async def delete_avatar(user_id: str) -> None:
+    def _delete() -> None:
+        cloudinary.uploader.destroy(
+            f"moodmap/avatars/avatar_{user_id}",
+            invalidate=True,
+        )
+
+    try:
+        await asyncio.to_thread(_delete)
+    except Exception as exc:  # noqa: BLE001
+        logger.error(f"Avatar deletion failed: {exc}")
+        raise
+
+
 async def cache_place_photo(photo_name: str, place_id: str) -> str | None:
     try:
         if photo_name.startswith("http://") or photo_name.startswith("https://"):

@@ -605,15 +605,15 @@
   .app-input {
     @apply w-full rounded-xl text-sm text-white outline-none transition-all duration-200;
     padding: 0.75rem 0.875rem;
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(145deg, rgba(21, 23, 43, 0.94), rgba(8, 10, 22, 0.91));
+    border: 1px solid rgba(255, 255, 255, 0.13);
   }
   .app-input::placeholder {
     color: rgba(148, 163, 184, 0.55);
   }
   .app-input:focus {
     border-color: rgba(167, 139, 250, 0.6);
-    background: rgba(0, 0, 0, 0.28);
+    background: linear-gradient(145deg, rgba(28, 30, 54, 0.96), rgba(12, 14, 28, 0.94));
     box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.14);
   }
 

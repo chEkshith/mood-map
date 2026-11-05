@@ -107,6 +107,10 @@ export const authApi = {
     });
     return res.data;
   },
+  deleteAvatar: async (): Promise<{ avatar_url: null }> => {
+    const res = await apiClient.delete<{ avatar_url: null }>("/auth/avatar");
+    return res.data;
+  },
   changePassword: async (data: ChangePasswordPayload): Promise<{ message: string }> => {
     const res = await apiClient.put<{ message: string }>("/auth/change-password", data);
     return res.data;

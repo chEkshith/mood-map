@@ -26,7 +26,7 @@ from app.schemas.auth import (
     UpdateProfileRequest,
     UserResponse,
 )
-from app.services.cloudinary_service import upload_avatar
+from app.services.cloudinary_service import delete_avatar, upload_avatar
 
 logger = get_logger("auth_router")
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -199,6 +199,22 @@ async def upload_avatar_endpoint(
     return {"avatar_url": url}
 
 
+@router.delete("/avatar")
+async def delete_avatar_endpoint(
+    current_user: dict = Depends(get_current_user),
+    db: AsyncIOMotorDatabase = Depends(get_db),
+):
+    try:
+        await delete_avatar(str(current_user["_id"]))
+    except Exception as exc:  # noqa: BLE001
+        logger.warning(f"Could not delete avatar asset for user {current_user['_id']}: {exc}")
+
+    await db.users.update_one(
+        {"_id": current_user["_id"]}, {"$set": {"avatar_url": None}}
+    )
+    return {"avatar_url": None}
+
+
 @router.put("/change-password")
 async def change_password(
     payload: ChangePasswordRequest,
@@ -223,6 +239,11 @@ async def delete_account(
     db: AsyncIOMotorDatabase = Depends(get_db),
 ):
     user_id = current_user["_id"]
+    if current_user.get("avatar_url"):
+        try:
+            await delete_avatar(str(user_id))
+        except Exception as exc:  # noqa: BLE001
+            logger.warning(f"Could not delete avatar asset for user {user_id}: {exc}")
     await db.mood_entries.delete_many({"user_id": user_id})
     await db.refresh_tokens.delete_many({"user_id": user_id})
     await db.users.delete_one({"_id": user_id})

@@ -64,6 +64,7 @@ export function ProfilePage() {
   const [displayName, setDisplayName] = useState(user?.display_name ?? "");
   const [isSavingName, setIsSavingName] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [isRemovingAvatar, setIsRemovingAvatar] = useState(false);
 
   const [showPasswordSection, setShowPasswordSection] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
@@ -158,6 +159,21 @@ export function ProfilePage() {
       toast.error("Failed to upload photo.");
     } finally {
       setIsUploadingAvatar(false);
+    }
+  };
+
+  const handleAvatarRemove = async () => {
+    if (!user.avatar_url) return;
+
+    setIsRemovingAvatar(true);
+    try {
+      await authApi.deleteAvatar();
+      setUser({ ...user, avatar_url: null });
+      toast.success("Profile photo removed!");
+    } catch {
+      toast.error("Failed to remove photo.");
+    } finally {
+      setIsRemovingAvatar(false);
     }
   };
 
@@ -273,6 +289,21 @@ export function ProfilePage() {
                   )}
                   <input type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
                 </label>
+                {user.avatar_url && (
+                  <button
+                    type="button"
+                    onClick={handleAvatarRemove}
+                    disabled={isRemovingAvatar || isUploadingAvatar}
+                    className="absolute -bottom-2 -left-2 flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-rose-500 to-rose-600 ring-1 ring-white/30 shadow-[0_8px_20px_-6px_rgba(190,18,60,0.8)] transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
+                    aria-label="Remove photo"
+                  >
+                    {isRemovingAvatar ? (
+                      <Loader2 className="h-4 w-4 animate-spin text-white" />
+                    ) : (
+                      <Trash2 className="h-4 w-4 text-white" />
+                    )}
+                  </button>
+                )}
               </div>
 
               <div className="min-w-0 flex-1">
