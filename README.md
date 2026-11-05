@@ -94,8 +94,10 @@ Alternatively, set `MONGODB_URI=mongodb://127.0.0.1:27017` to use a local MongoD
 - **Backend:** deployed to [Render](https://render.com) as a web service; the CI pipeline triggers a deploy hook on every push to `main` after tests pass.
 - **Frontend:** deployed to [Vercel](https://vercel.com), which auto-deploys on push to `main`; no manual deploy step is required in CI.
 
+For the complete step-by-step deployment guide (MongoDB Atlas, Render, Vercel, environment variables, CORS/cookies, and troubleshooting), see [`DEPLOY_FLOW.md`](DEPLOY_FLOW.md).
+
 ## CI/CD Pipeline
 
-- **backend-ci.yml** — lints (`ruff check`), checks formatting (`ruff format --check`), and runs the pytest suite on every push/PR touching `backend/**`; deploys to Render on `main` after tests pass.
+- **backend-ci.yml** — runs `ruff check` and `ruff format --check` as advisory checks, then runs the pytest suite on every push/PR touching `backend/**`; deploys to Render on `main` after tests pass.
 - **frontend-ci.yml** — installs dependencies, lints, type-checks (`tsc --noEmit`), and builds on every push/PR touching `frontend/**`. Vercel handles deployment automatically.
 - **security-scan.yml** — runs `safety check` against backend dependencies and `npm audit --audit-level=high` against frontend dependencies, on push to `main` and weekly on a Monday cron schedule.

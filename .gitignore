@@ -5,6 +5,8 @@ backend/.venv/
 backend/.pytest_cache/
 frontend/node_modules/
 frontend/dist/
+frontend/.vercel/
+.vercel/
 *.pyc
 .DS_Store
 *.egg-info/

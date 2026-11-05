@@ -3,6 +3,7 @@ uvicorn[standard]
 pydantic[email]
 pydantic-settings
 httpx
+certifi
 motor
 pymongo
 python-jose[cryptography]

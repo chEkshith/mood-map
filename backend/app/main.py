@@ -41,7 +41,15 @@ _default_origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
-_allowed_origins = list(dict.fromkeys([settings.frontend_url, *_default_origins]))
+
+
+def _configured_origins(value: str) -> list[str]:
+    return [origin.strip().rstrip("/") for origin in value.split(",") if origin.strip()]
+
+
+_allowed_origins = list(
+    dict.fromkeys([*_configured_origins(settings.frontend_url), *_default_origins])
+)
 
 app.add_middleware(
     CORSMiddleware,
