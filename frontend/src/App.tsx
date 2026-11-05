@@ -9,6 +9,7 @@ import { IntroSplash } from "./components/IntroSplash";
 import { VortxBackground } from "./components/VortxBackground";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { useAuth } from "./hooks/useAuth";
+import { AboutPage } from "./pages/AboutPage";
 import { AppPage } from "./pages/AppPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { HistoryPage } from "./pages/HistoryPage";
@@ -136,6 +137,7 @@ export default function App() {
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/history" element={<HistoryPage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/about" element={<AboutPage />} />
             </Route>
           </Route>
         </Routes>

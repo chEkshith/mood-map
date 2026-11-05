@@ -1,4 +1,4 @@
-import { BarChart2, Clock, LogOut, MapPinned, User } from "lucide-react";
+import { BarChart2, Clock, Info, LogOut, MapPinned, User } from "lucide-react";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { authApi } from "../api/client";
@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { to: "/dashboard", label: "Dashboard", icon: BarChart2 },
   { to: "/history", label: "History", icon: Clock },
   { to: "/profile", label: "Profile", icon: User },
+  { to: "/about", label: "About", icon: Info },
 ];
 
 function getActiveLink(pathname: string) {
@@ -95,7 +96,7 @@ export function AppHeader() {
   }, [mobileOpen]);
 
   return (
-    <header className="relative z-20 mx-3 mt-3 md:mx-5 md:mt-5">
+    <header id="app-header" className="relative z-20 mx-3 mt-3 md:mx-5 md:mt-5">
       <nav className="app-nav flex items-center justify-between gap-3 rounded-2xl px-3 py-2.5 md:px-4">
         <NavLink to="/app" className="group relative z-10 flex items-center gap-3">
           <span className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 bg-gradient-to-br from-violet-500/30 via-white/[0.07] to-sky-500/20 shadow-[0_10px_28px_-14px_rgba(139,92,246,0.9),inset_0_1px_0_rgba(255,255,255,0.2)] transition-all duration-500 group-hover:-rotate-3 group-hover:scale-105 md:h-11 md:w-11">

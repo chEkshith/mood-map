@@ -1,6 +1,7 @@
 import { ExternalLink, MapPin, Navigation, Star, X } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { useMoodStore } from "../store/moodStore";
+import { PlacePhoto } from "./PlacePhoto";
 
 function formatDistance(meters: number | null): string {
   if (meters === null) return "Distance unknown";
@@ -11,6 +12,7 @@ function formatDistance(meters: number | null): string {
 export function PlaceDetailDrawer() {
   const selectedPlace = useMoodStore((s) => s.selectedPlace);
   const selectPlace = useMoodStore((s) => s.selectPlace);
+  const [headerBottom, setHeaderBottom] = useState(0);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -19,6 +21,25 @@ export function PlaceDetailDrawer() {
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [selectPlace]);
+
+  useEffect(() => {
+    const header = document.getElementById("app-header");
+    if (!header) return;
+
+    const update = () => {
+      setHeaderBottom(Math.ceil(header.getBoundingClientRect().bottom));
+    };
+
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(header);
+    window.addEventListener("resize", update);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", update);
+    };
+  }, []);
 
   if (!selectedPlace) return null;
 
@@ -32,20 +53,18 @@ export function PlaceDetailDrawer() {
         onClick={() => selectPlace(null)}
       />
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 md:bottom-0 md:left-auto md:right-0 md:top-0 md:w-[420px] animate-slide-up md:animate-none">
+      <div
+        className="fixed bottom-0 left-0 right-0 z-50 md:bottom-0 md:left-auto md:right-0 md:top-[var(--drawer-top)] md:w-[420px] animate-slide-up md:animate-none"
+        style={{ "--drawer-top": `${headerBottom}px` } as CSSProperties}
+      >
         <div className="h-auto max-h-[85vh] overflow-y-auto rounded-t-2xl border-t border-white/10 bg-[#070810]/95 shadow-2xl backdrop-blur-2xl md:h-full md:max-h-none md:rounded-none md:rounded-l-2xl md:border-l md:border-t-0">
-          <div className="relative h-52 shrink-0 overflow-hidden bg-white/[0.03]">
-            {selectedPlace.photo_url ? (
-              <img
-                src={selectedPlace.photo_url}
-                alt={selectedPlace.name}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center">
-                <MapPin className="h-9 w-9 text-white/20" />
-              </div>
-            )}
+          <div className="relative h-56 shrink-0 overflow-hidden bg-white/[0.03]">
+            <PlacePhoto
+              photoUrl={selectedPlace.photo_url}
+              name={selectedPlace.name}
+              types={selectedPlace.place_types}
+              variant="detail"
+            />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#070810] via-black/10 to-black/20" />
             <button
               onClick={() => selectPlace(null)}
@@ -64,7 +83,7 @@ export function PlaceDetailDrawer() {
               <h2 className="mt-2 font-display text-xl font-semibold tracking-tight text-white">
                 {selectedPlace.name}
               </h2>
-              <p className="mt-0.5 text-xs capitalize text-white/40">{firstType}</p>
+              <p className="mt-0.5 text-xs capitalize text-white/50">{firstType}</p>
             </div>
 
             <div className="flex items-center gap-5 border-y border-white/10 py-4">
@@ -96,8 +115,8 @@ export function PlaceDetailDrawer() {
 
             <div className="flex items-start gap-2.5">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-white/35" />
-              <p className="text-sm leading-relaxed text-white/55">
-                {selectedPlace.address}
+              <p className="text-sm leading-relaxed text-white/65">
+                {selectedPlace.address || "Address unavailable"}
               </p>
             </div>
 
@@ -106,7 +125,7 @@ export function PlaceDetailDrawer() {
                 <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-violet-200/80">
                   Why this place?
                 </p>
-                <p className="mt-1.5 text-xs leading-relaxed text-white/55">
+                <p className="mt-1.5 text-xs leading-relaxed text-white/65">
                   {selectedPlace.why_suggested}
                 </p>
               </div>
@@ -121,7 +140,7 @@ export function PlaceDetailDrawer() {
                   {selectedPlace.place_types.slice(0, 5).map((type) => (
                     <span
                       key={type}
-                      className="rounded-md border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] capitalize text-white/55"
+                      className="rounded-md border border-white/10 bg-white/[0.05] px-2.5 py-1 text-[11px] capitalize text-white/65"
                     >
                       {type.replace(/_/g, " ")}
                     </span>

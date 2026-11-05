@@ -62,9 +62,13 @@ export function AppPage() {
           )}
         </div>
 
-        <div className="space-y-4 anim-stagger" style={{ animationDelay: "0.3s" }}>
-          <InteractiveMapView />
-          <PlaceCardList />
+        <div className="flex flex-col gap-4 anim-stagger" style={{ animationDelay: "0.3s" }}>
+          <div className="order-2 lg:order-1">
+            <InteractiveMapView />
+          </div>
+          <div className="order-1 lg:order-2">
+            <PlaceCardList />
+          </div>
         </div>
       </div>
 

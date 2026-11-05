@@ -85,7 +85,7 @@ export const useMoodStore = create<MoodStoreState>((set, get) => ({
       return;
     }
 
-    set({ apiStatus: "loading", errorMessage: null });
+    set({ apiStatus: "loading", errorMessage: null, selectedPlace: null });
     try {
       const response = await moodApi.submitMood({
         raw_text: text,

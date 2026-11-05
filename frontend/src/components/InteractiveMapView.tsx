@@ -1,7 +1,15 @@
 import L from "leaflet";
 import { MapPin } from "lucide-react";
 import { useEffect } from "react";
-import { CircleMarker, MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import {
+  CircleMarker,
+  MapContainer,
+  Marker,
+  Popup,
+  TileLayer,
+  Tooltip,
+  useMap,
+} from "react-leaflet";
 import { useMoodStore } from "../store/moodStore";
 import type { PlaceSuggestion } from "../types";
 
@@ -26,17 +34,25 @@ const LEGEND = [
   { label: "Match", color: "bg-emerald-400" },
 ];
 
-function makeStrategyIcon(strategy: string, isSelected: boolean): L.DivIcon {
+function makeStrategyIcon(
+  strategy: string,
+  isSelected: boolean,
+  index: number,
+): L.DivIcon {
   const color = STRATEGY_COLOR[strategy] ?? "#a78bfa";
-  const size = isSelected ? 30 : 22;
-  const inner = Math.round(size * 0.34);
+  const size = isSelected ? 36 : 30;
+  const fontSize = isSelected ? 14 : 12;
   return L.divIcon({
     className: "",
     html: `<div style="position:relative;width:${size}px;height:${size}px;">
-      <div style="position:absolute;inset:0;border-radius:9999px;background:${color}33;border:1px solid ${color}80;"></div>
-      <div style="position:absolute;top:${(size - inner) / 2}px;left:${(size - inner) / 2}px;width:${inner}px;height:${inner}px;border-radius:9999px;background:${color};box-shadow:0 0 0 2px rgba(5,6,15,0.9);${
-        isSelected ? "animation: moodmap-bounce 0.6s ease infinite alternate;" : ""
-      }"></div>
+      ${
+        isSelected
+          ? `<div class="moodmap-pulse" style="position:absolute;inset:-7px;border-radius:9999px;border:2px solid ${color};"></div>`
+          : ""
+      }
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:9999px;background:${color};border:2px solid rgba(255,255,255,0.92);box-shadow:0 3px 10px rgba(0,0,0,0.6),0 0 0 3px rgba(5,6,15,0.55),0 0 20px ${color}80;color:#080a16;font-weight:800;font-size:${fontSize}px;font-family:'Plus Jakarta Sans',sans-serif;line-height:1;">${
+        index + 1
+      }</div>
     </div>`,
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2],
@@ -48,6 +64,30 @@ function RecenterOnChange({ lat, lng }: { lat: number; lng: number }) {
   useEffect(() => {
     map.setView([lat, lng], map.getZoom());
   }, [lat, lng, map]);
+  return null;
+}
+
+function FitPlacesOnChange({
+  places,
+  center,
+}: {
+  places: PlaceSuggestion[];
+  center: { lat: number; lng: number } | null;
+}) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (places.length === 0) return;
+
+    const points = places.map((place) => L.latLng(place.latitude, place.longitude));
+    if (center) points.push(L.latLng(center.lat, center.lng));
+
+    map.fitBounds(L.latLngBounds(points), {
+      padding: [48, 48],
+      maxZoom: 16,
+    });
+  }, [places, center, map]);
+
   return null;
 }
 
@@ -77,10 +117,6 @@ export function InteractiveMapView() {
 
       <div className="relative h-[340px] lg:h-[420px]">
         <style>{`
-          @keyframes moodmap-bounce {
-            from { transform: translateY(0); }
-            to { transform: translateY(-4px); }
-          }
           .moodmap-pulse {
             animation: moodmap-pulse-anim 2s ease-out infinite;
           }
@@ -96,6 +132,7 @@ export function InteractiveMapView() {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             maxZoom={19}
           />
+          <FitPlacesOnChange places={places} center={coordinates} />
           {coordinates && (
             <>
               <RecenterOnChange lat={coordinates.lat} lng={coordinates.lng} />
@@ -113,16 +150,23 @@ export function InteractiveMapView() {
               </CircleMarker>
             </>
           )}
-          {places.map((place: PlaceSuggestion) => (
-            <Marker
-              key={place.place_id}
-              position={[place.latitude, place.longitude]}
-              icon={makeStrategyIcon(strategy, selectedPlace?.place_id === place.place_id)}
-              eventHandlers={{ click: () => selectPlace(place) }}
-            >
-              <Popup>{place.name}</Popup>
-            </Marker>
-          ))}
+          {places.map((place: PlaceSuggestion, index: number) => {
+            const isSelected = selectedPlace?.place_id === place.place_id;
+            return (
+              <Marker
+                key={place.place_id}
+                position={[place.latitude, place.longitude]}
+                icon={makeStrategyIcon(strategy, isSelected, index)}
+                zIndexOffset={isSelected ? 1000 : 0}
+                eventHandlers={{ click: () => selectPlace(place) }}
+              >
+                <Tooltip direction="top" offset={[0, -16]} opacity={1} permanent={isSelected}>
+                  {place.name}
+                </Tooltip>
+                <Popup>{place.name}</Popup>
+              </Marker>
+            );
+          })}
         </MapContainer>
 
         <div className="pointer-events-none absolute bottom-3 left-3 z-[500] flex items-center gap-3 rounded-lg border border-white/10 bg-[#0a0b16]/85 px-3 py-2 backdrop-blur-md">
