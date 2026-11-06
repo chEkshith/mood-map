@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /app
+Disallow: /dashboard
+Disallow: /history
+Disallow: /profile
+Disallow: /about
+
+Sitemap: https://mood-map-sigma.vercel.app/sitemap.xml
