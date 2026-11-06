@@ -10,6 +10,7 @@ const STATUS_COPY: Record<string, { label: string; dot: string }> = {
   loading: { label: "Finding places", dot: "bg-amber-400 animate-pulse" },
   success: { label: "Search complete", dot: "bg-emerald-400" },
   error: { label: "Search failed", dot: "bg-rose-400" },
+  blocked: { label: "Request not supported", dot: "bg-amber-400" },
 };
 
 export function AppPage() {

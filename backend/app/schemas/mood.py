@@ -40,10 +40,12 @@ class MoodResult(BaseModel):
 
 
 class APIResponse(BaseModel):
-    mood: MoodResult
-    places: list[PlaceSuggestion]
-    total_results: int
+    mood: MoodResult | None = None
+    places: list[PlaceSuggestion] = Field(default_factory=list)
+    total_results: int = 0
     request_id: str
+    blocked: bool = False
+    message: str | None = None
 
 
 class HistoryEntry(BaseModel):

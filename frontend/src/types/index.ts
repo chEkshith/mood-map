@@ -26,10 +26,12 @@ export interface PlaceSuggestion {
 }
 
 export interface APIResponse {
-  mood: MoodResult;
+  mood: MoodResult | null;
   places: PlaceSuggestion[];
   total_results: number;
   request_id: string;
+  blocked?: boolean;
+  message?: string | null;
 }
 
 export interface HistoryEntry {

@@ -6,6 +6,7 @@ import { PlaceCard } from "./PlaceCard";
 export function PlaceCardList() {
   const places = useMoodStore((s) => s.places);
   const apiStatus = useMoodStore((s) => s.apiStatus);
+  const errorMessage = useMoodStore((s) => s.errorMessage);
   const listRef = useRef<HTMLDivElement>(null);
   const previousStatus = useRef(apiStatus);
 
@@ -49,11 +50,24 @@ export function PlaceCardList() {
     );
   }
 
+  if (apiStatus === "blocked") {
+    return (
+      <div className="app-panel p-8 text-center">
+        <p className="text-sm text-amber-200">
+          {errorMessage ?? "Sorry, I cannot help with your problem."}
+        </p>
+        <p className="mt-1 text-xs text-white/30">
+          Try describing how you are feeling instead.
+        </p>
+      </div>
+    );
+  }
+
   if (apiStatus === "error") {
     return (
       <div className="app-panel p-6 text-center">
         <p className="text-sm text-rose-300">
-          Failed to load results. Please try again.
+          {errorMessage ?? "Failed to load results. Please try again."}
         </p>
       </div>
     );

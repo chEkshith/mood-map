@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { moodApi } from "../api/client";
+import { getApiErrorMessage, moodApi } from "../api/client";
 import type {
   HistoryEntry,
   HistoryQueryParams,
@@ -10,7 +10,7 @@ import type {
 } from "../types";
 
 type LocationStatus = "idle" | "requesting" | "granted" | "denied";
-type ApiStatus = "idle" | "loading" | "success" | "error";
+type ApiStatus = "idle" | "loading" | "success" | "error" | "blocked";
 
 interface Coordinates {
   lat: number;
@@ -93,14 +93,27 @@ export const useMoodStore = create<MoodStoreState>((set, get) => ({
         longitude: coordinates.lng,
         radius_meters: radiusMeters,
       });
+
+      if (response.blocked) {
+        set({
+          apiStatus: "blocked",
+          errorMessage: response.message ?? "Sorry, I cannot help with your problem.",
+          currentMood: null,
+          places: [],
+        });
+        return;
+      }
+
       set({
         apiStatus: "success",
         currentMood: response.mood,
         places: response.places,
       });
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Something went wrong classifying your mood.";
+      const message = getApiErrorMessage(
+        err,
+        "Something went wrong classifying your mood."
+      );
       set({ apiStatus: "error", errorMessage: message });
     }
   },

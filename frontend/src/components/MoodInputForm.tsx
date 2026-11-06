@@ -1,4 +1,4 @@
-import { Loader2, MapPin, Search } from "lucide-react";
+import { AlertCircle, Loader2, MapPin, Search } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import toast from "react-hot-toast";
 import { useGeolocation } from "../hooks/useGeolocation";
@@ -53,8 +53,12 @@ export function MoodInputForm() {
       return;
     }
     await submitMood(text.trim());
-    if (apiStatus === "error" && errorMessage) {
-      toast.error(errorMessage);
+    const state = useMoodStore.getState();
+    if (
+      (state.apiStatus === "error" || state.apiStatus === "blocked") &&
+      state.errorMessage
+    ) {
+      toast.error(state.errorMessage);
     }
   };
 
@@ -161,6 +165,19 @@ export function MoodInputForm() {
             {LOCATION_LABEL[locationStatus]}
           </span>
         </div>
+
+        {errorMessage && (apiStatus === "error" || apiStatus === "blocked") && (
+          <div
+            className={`flex items-start gap-2 rounded-lg border px-3 py-2 text-xs ${
+              apiStatus === "blocked"
+                ? "border-amber-400/20 bg-amber-400/10 text-amber-200"
+                : "border-rose-400/20 bg-rose-400/10 text-rose-200"
+            }`}
+          >
+            <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+            <span>{errorMessage}</span>
+          </div>
+        )}
 
         <button type="submit" disabled={!canSubmit} className="btn-primary w-full !py-3.5">
           {isLoading ? (

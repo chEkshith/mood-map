@@ -25,6 +25,7 @@
 | Area | What it does |
 |---|---|
 | **Mood check-ins** | Free-text journaling; no long questionnaire. Groq's `openai/gpt-oss-20b` classifies the tone into one of six moods. |
+| **Prompt safety** | Explicit, criminal, or partner-seeking requests are declined with a polite message instead of returning places. |
 | **Smart place matching** | Each mood maps to a strategy and Google Place types, then nearby results are ranked by distance and fit. |
 | **Interactive map** | Leaflet + OpenStreetMap view with mood-filtered place pins and detail drawers. |
 | **Place cards & photos** | Curated cards with ratings, opening hours, distance, and Cloudinary-cached photos. |

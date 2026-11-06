@@ -23,6 +23,7 @@ from app.services.cloudinary_service import cache_place_photo
 from app.services.history import HistoryService
 from app.services.mood_logic import resolve_place_types
 from app.services.places import GooglePlacesService
+from app.services.safety import get_blocked_message
 
 logger = get_logger("mood_router")
 router = APIRouter(prefix="/mood", tags=["mood"])
@@ -70,6 +71,15 @@ async def submit_mood(
     current_user: dict = Depends(get_current_user),
     db: AsyncIOMotorDatabase = Depends(get_db),
 ):
+    blocked_message = get_blocked_message(payload.raw_text)
+    if blocked_message is not None:
+        logger.info("Blocked unsafe or inappropriate mood request")
+        return APIResponse(
+            request_id=str(uuid.uuid4()),
+            blocked=True,
+            message=blocked_message,
+        )
+
     mood, confidence = await classifier.classify(payload.raw_text)
     place_types, strategy, why = resolve_place_types(mood)
 
